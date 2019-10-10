@@ -13,6 +13,7 @@ with open(dir_path+'/productImageFeed.csv', mode='r') as csv_file:
             break
         image_path = dir_path+'/photo%d.jpg ' % line_count
         print(image_path)
+        #Uncomment below lines to downlaod the images
         # f = open(image_path,'wb')
         # f.write(urllib.request.urlopen(image_url).read())
         # f.close()
