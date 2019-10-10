@@ -3,7 +3,7 @@
 """
 Created on Mon Sep 16 12:23:03 2019
 
-@author: burakegeli
+@author: burakegeli,emreuludag,eralpkocas
 """
 
 from train import load_data
