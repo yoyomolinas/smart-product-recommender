@@ -1,0 +1,5 @@
+imageExtractor/
+*.jpg
+*.csv
+*.zip
+ipynb_checkpoints/
