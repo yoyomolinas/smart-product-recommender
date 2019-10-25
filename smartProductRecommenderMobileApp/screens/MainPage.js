@@ -1,0 +1,144 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Alert,
+  Image
+} from 'react-native';
+
+import Card from '../components/Card';
+import Input from '../components/Input';
+import Colors from '../constants/colors';
+
+const MainPage = props => {
+  const [enteredValue, setEnteredValue] = useState('');
+  const [confirmed, setConfirmed] = useState(false);
+  const [selectedName, setName] = useState();
+
+  const nameInputHandler = inputText => {
+    setEnteredValue(inputText.replace(/[^A-Za-z]/g, ''));
+  };
+  constAlertHandler = (){
+    console.log("Do Nothing")
+  }
+
+  const confirmInputHandler = () => {
+    const specifiedName = enteredValue
+    if (!isNaN(enteredValue)) {
+      Alert.alert(
+        'You did not enter anything!',
+        'Please input your name.',
+        [{ text: 'Okay', style: 'destructive', onPress: {dismiss} }]
+      );
+      return;
+    }
+    setConfirmed(true);
+    setName(specifiedName);
+    setEnteredValue('');
+    Keyboard.dismiss();
+  };
+
+  let confirmedOutput;
+
+  if (confirmed) {
+    confirmedOutput = (
+      <View >
+      <Card style={styles.outputContainer}>
+        <View style={styles.productNav}>
+        <Text style={styles.text}>Welcome {selectedName}</Text>
+        </View>
+        <Button title="Go To Product Page"
+        onPress={() => props.onMainPageLoad(selectedName)}
+        color={Colors.primary}
+        />
+      </Card>
+    </View>
+    );
+  }
+
+  return (
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+      <View style={styles.screen}>
+        <Image source= {require('../assets/smartProductReco.png')}
+              style ={styles.image}
+              resizeMode = 'cover'
+        />
+        <Card style={styles.outputContainer}>
+          <Text style={styles.text}>Enter Your Name</Text>
+          <Input
+            style={styles.input}
+            blurOnSubmit
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="default"
+            maxLength={10}
+            onChangeText={nameInputHandler}
+            value={enteredValue}
+          />
+          <View style={styles.buttonContainer}>
+            <View style={styles.button}>
+              <Button
+                title="Confirm"
+                onPress={confirmInputHandler}
+                color={Colors.primary}
+              />
+            </View>
+          </View>
+        </Card>
+        {confirmedOutput}
+      </View>
+    </TouchableWithoutFeedback>
+  );
+};
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center'
+  },
+  title: {
+    fontSize: 20,
+    marginVertical: 10
+  },
+  productNav: {
+    marginVertical : 20
+  },
+  outputContainer: {
+    margin : 20,
+    width: 300,
+    maxWidth: '80%',
+    alignItems: 'center'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15
+  },
+  button: {
+    width: 200
+  },
+  input: {
+    width: 50,
+    textAlign: 'center'
+  },
+  image: {
+      width :'50%',
+      height : 150
+  },
+  text: {
+    color: 'black',
+    fontSize: 18
+  }
+});
+
+export default MainPage;

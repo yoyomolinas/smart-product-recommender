@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Smart Product Recommender",
-    "slug": "smartProductRecommender",
+    "slug": "smartProductRecommenderMobileApp",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
