@@ -6,7 +6,7 @@ const Header = props => {
   return (
     <View style={styles.header}>
      
-        <Image source= {require('../assets/Koc_University_logo.jpg')}
+        <Image source= {require('../assets/koc_logo.jpeg')}
               style ={styles.headerImage}
               resizeMode = 'contain' 
         />
