@@ -1,6 +1,7 @@
 # Comp 491 - Computer Engineering Design Project
 
-Please check the folder smartProductRecommender for our mobile App!
+Please check the folder smartProductRecommenderMobileApp for our mobile App!
+Also, please check djangoServer for our backend!
 
 It is just released and in the phase of development!
 
