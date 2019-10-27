@@ -5,6 +5,8 @@ import Header from './components/Header';
 import MainPage from './screens/MainPage';
 import ProductShot from './screens/ProductShot';
 
+import PagesNavigator from './navigation/PagesNavigator'
+
 export default function App() {
   const [userName,setUserName] = useState();
 
