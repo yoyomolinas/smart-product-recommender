@@ -5,10 +5,11 @@ import Card from '../components/Card';
 import Colors from '../constants/colors';
 
 const cameraHandler = () => {
-  console.log( "Must open Camera");
+  console.log( "This is the camera");
 }
 
-const GameScreen = props => {
+const ProductShot = props => {
+  const [cameraMode,setCameraMode] = useState(false)
   return (
     <View style={styles.screen}>
     <Image source= {require('../assets/smartProductReco.png')}
@@ -26,7 +27,11 @@ const GameScreen = props => {
       <Card style={styles.buttonContainer}>
       <Button
                 title="Go to the Camera"
-                onPress={cameraHandler}
+                onPress={ () => {
+                  setCameraMode(true);
+                  props.onCameraPageClick(cameraMode);
+                }
+                }
                 color={Colors.primary}
               />
       </Card>
@@ -65,4 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GameScreen;
+export default ProductShot;

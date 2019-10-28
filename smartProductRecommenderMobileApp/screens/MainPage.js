@@ -22,7 +22,7 @@ const MainPage = props => {
   const nameInputHandler = inputText => {
     setEnteredValue(inputText.replace(/[^A-Za-z]/g, ''));
   };
-  constAlertHandler = (){
+  constAlertHandler = () => {
     console.log("Do Nothing")
   }
 
@@ -32,7 +32,8 @@ const MainPage = props => {
       Alert.alert(
         'You did not enter anything!',
         'Please input your name.',
-        [{ text: 'Okay', style: 'destructive', onPress: {dismiss} }]
+        [{ text: 'Okay', style: 'destructive'}],
+        () => {}
       );
       return;
     }
