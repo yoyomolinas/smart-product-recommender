@@ -9,6 +9,7 @@ import ImgPicker from './screens/ImgPicker';
 export default function App() {
   const [userName,setUserName] = useState();
   const [cameraMode,setCameraMode] = useState();
+  const [takenImage, setTakenImage] = useState();
 
   const mainPageHandler = selectedName => {
     setUserName(selectedName);
@@ -18,6 +19,10 @@ export default function App() {
     setCameraMode(cameraMode);
   }
 
+  const imageTakenHandler = pickedImage => {
+    setTakenImage(pickedImage);
+  }
+
   let content = <MainPage onMainPageLoad={mainPageHandler} />;
 
   if (userName) {
@@ -25,7 +30,7 @@ export default function App() {
   }
 
   if (cameraMode) {
-    content = <ImgPicker/>
+    content = <ImgPicker onImagePicked={imageTakenHandler}/>
   }
 
   return (
