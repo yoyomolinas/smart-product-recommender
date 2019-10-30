@@ -5,11 +5,16 @@ Also, please check djangoServer for our backend!
 
 It is just released and in the phase of development!
 
+Our introduction website is ready: 
+https://gentle-shelf-38277.herokuapp.com/
+
 Our App Screen Video is ready now :
 https://drive.google.com/open?id=10snEXscZALH07bJe5QIbJP6hxtbg0SBj
 
 Our endpoint is ready in firebase:
 https://smartproductrecommender.firebaseio.com/
+
+
 
 
 
