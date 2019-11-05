@@ -1,4 +1,6 @@
-imageExtractor/
+*.jpg 
+*.png
+*.jpeg
 *.csv
 *.zip
 ipynb_checkpoints/
