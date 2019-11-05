@@ -13,9 +13,7 @@ from tensorflow.keras.regularizers import l2
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras import layers
 
-FEATURE_SIZE = 64
-
-def create_base_network(input_shape):
+def base(input_shape, feature_size = 64):
     """
     Base network to be shared.
     """
@@ -25,10 +23,10 @@ def create_base_network(input_shape):
     model.add(keras.layers.Conv2D(64,(5,5),padding='same',activation='relu',name='conv2'))
     model.add(keras.layers.MaxPooling2D((2,2),(2,2),padding='same',name='pool2'))
     model.add(keras.layers.Flatten(name='flatten'))
-    model.add(keras.layers.Dense(FEATURE_SIZE,name='embeddings'))
+    model.add(keras.layers.Dense(feature_size,name='embeddings'))
     return model
 
-def create_minixception(input_shape):
+def minixception(input_shape, feature_size = 64):
     regularization = l2(0.01)
     img_input = Input(input_shape)
     x = Conv2D(32, (3, 3), strides=(1, 1), kernel_regularizer=regularization,
@@ -113,10 +111,10 @@ def create_minixception(input_shape):
     x = layers.add([x, residual])
 
     g = GlobalAveragePooling2D()(x)
-    x = layers.Dense(FEATURE_SIZE)(g)
+    x = layers.Dense(feature_size)(g)
     return keras.models.Model(inputs=img_input, outputs = x)
 
-def create_bigxception(input_shape):
+def bigxception(input_shape, feature_size = 64):
     regularization = l2(0.01)
     img_input = Input(input_shape)
     x = Conv2D(32, (3, 3), strides=(2, 2), use_bias=False)(img_input)
@@ -166,12 +164,12 @@ def create_bigxception(input_shape):
     x = layers.add([x, residual])
 
     x = Flatten()(x)
-    x = Dense(FEATURE_SIZE)(x)
+    x = Dense(feature_size)(x)
     return keras.models.Model(inputs=img_input, outputs = x)
 
-def create_pretrained_mobilenetv1(input_shape):
+def pretrained_mobilenetv1(input_shape, feature_size = 64):
     mobil = keras.applications.mobilenet.MobileNet(input_shape=input_shape, include_top=False, weights='imagenet', pooling='avg')
     x = mobil.outputs[0]
-    x = keras.layers.Dense(FEATURE_SIZE,name='embeddings')(x)
+    x = keras.layers.Dense(feature_size,name='embeddings')(x)
     model = keras.models.Model(inputs = mobil.inputs[0], outputs = x)
     return model

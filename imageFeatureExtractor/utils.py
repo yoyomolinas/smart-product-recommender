@@ -1,9 +1,34 @@
+import os
 import random
 import numpy as np
+from PIL import Image
+import pandas as pd
+from tqdm import tqdm
 
-def split(x, y, ratio):
+IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png']
+
+def load_data(label_path, resize = None):
+    assert os.path.isfile(label_path)
+    X, Y = [], []
+    category_index = {} # category index
+    df = pd.read_csv(label_path, usecols = ['path', 'label_id', 'label_name'])
+    for fpath, cid, cname in tqdm(df.to_numpy()):
+        img = Image.open(fpath)
+        if resize:
+            img = img.resize(resize, Image.NEAREST)
+        img_arr = np.array(img)
+        if len(img_arr.shape) != 3:
+            continue
+        X.append(img_arr)
+        Y.append(cid)
+        category_index[cid] = cname
+    X = np.array(X)
+    Y = np.array(Y)
+    return X, Y, category_index
+
+def split_by_class(x, y, ratio):
     """
-    Split classes as test/train
+    Split by class as test/train
     Return x_train, x_test, y_train, y_test
     """
     random.seed(2)

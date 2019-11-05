@@ -24,19 +24,19 @@ def main(_argv):
     for i, (cat_name, cat_id, url) in tqdm(enumerate(zip(cat_names, cat_ids, urls))):
         image_path = join(FLAGS.image_dir, '%d.jpg' % i)
         # Continue fetching despite previous fail
-        if os.path.isfile(image_path):
-            continue
-        try:
-            content = urllib.request.urlopen(url)
-            with open(image_path,'wb') as f:
-                f.write(content.read())
-            image_paths.append(image_path)
-            cnames.append(cat_name)
-            cids.append(cat_id)
+        if not os.path.isfile(image_path):            
+            try:
+                content = urllib.request.urlopen(url)
+                with open(image_path,'wb') as f:
+                    f.write(content.read())
 
-        except urllib.error.URLError as e:
-            pass
-    
+            except urllib.error.URLError as e:
+                continue
+        
+        image_paths.append(image_path)
+        cnames.append(cat_name)
+        cids.append(cat_id)
+
     df_labels = pd.DataFrame({'path' : image_paths, 'label_id' : cids, 'label_name' : cnames})
     df_labels.to_csv(FLAGS.label_path)
 
