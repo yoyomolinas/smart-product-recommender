@@ -4,14 +4,19 @@ import numpy as np
 from PIL import Image
 import pandas as pd
 from tqdm import tqdm
+from itertools import permutations
 
 IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png']
 
-def load_data(label_path, resize = None):
+def load_data(label_path, resize = None, limit = None):
+    """
+
+    """
     assert os.path.isfile(label_path)
     X, Y = [], []
     category_index = {} # category index
     df = pd.read_csv(label_path, usecols = ['path', 'label_id', 'label_name'])
+    i = 0
     for fpath, cid, cname in tqdm(df.to_numpy()):
         img = Image.open(fpath)
         if resize:
@@ -22,6 +27,10 @@ def load_data(label_path, resize = None):
         X.append(img_arr)
         Y.append(cid)
         category_index[cid] = cname
+        if limit:
+            if i > limit:
+                break
+        i += 1
     X = np.array(X)
     Y = np.array(Y)
     return X, Y, category_index
@@ -58,12 +67,11 @@ def generate_triplet(x, y, ap_pairs=10, an_pairs=10):
     for data_class in tqdm(sorted(set(data_xy[1]))):
         same_class_idx = np.where((data_xy[1] == data_class))[0]
         diff_class_idx = np.where(data_xy[1] != data_class)[0]
-        num_perms = len(list(permutations(same_class_idx,2)))
-        if num_perms < 2 or num_perms < ap_pairs:
+        num_positive_perms = min(len(list(permutations(same_class_idx,2))), ap_pairs)
+        if num_positive_perms < 2:# or num_perms < ap_pairs:
             continue
-        
-        A_P_pairs = random.sample(list(permutations(same_class_idx,2)),k=ap_pairs) #Generating Anchor-Positive pairs
-        Neg_idx = random.sample(list(diff_class_idx),k=an_pairs)
+        A_P_pairs = random.sample(list(permutations(same_class_idx,2)),k=num_positive_perms) #Generating Anchor-Positive pairs
+        Neg_idx = random.sample(list(diff_class_idx),k=min(an_pairs, len(list(diff_class_idx))))
 
         A_P_len = len(A_P_pairs)
         Neg_len = len(Neg_idx)
