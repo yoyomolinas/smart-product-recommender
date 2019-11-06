@@ -10,7 +10,12 @@ from sklearn.model_selection import train_test_split
 from absl import app, flags, logging
 from absl.flags import FLAGS
 
-# Example command: python deploy.py --weights_path progress/test_minix_weights.hdf5 --save_path deploy/test_minix_model.hdf5 --input_size 300,400 --model_type 1
+"""
+This script deploys a model trained on triplets.
+Example usage: 
+    python deploy.py --weights_path progress/test_minix_weights.hdf5 --save_path deploy/test_minix_model.hdf5 --input_size 300,400 --model_type 1
+"""
+
 
 DEFAULT_FEATURE_SIZE = 64
 DEFAULT_IMAGE_SIZE = (300, 400) # width, height

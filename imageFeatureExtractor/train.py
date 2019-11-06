@@ -10,7 +10,13 @@ from sklearn.model_selection import train_test_split
 from absl import app, flags, logging
 from absl.flags import FLAGS
 
-# Example command: python train.py --save_path ../progress/minix/model.hdf5 --epochs 60 --batch_size 32
+"""
+This script trains a model on triplets.
+Example usage: 
+    python train.py --save_path ../progress/minix/model.hdf5 --epochs 60 --batch_size 32
+"""
+
+# Example command: 
 
 DEFAULT_LABEL_PATH = "data/labels/lcwaikiki_labels.csv"
 DEFAULT_SAVE_PATH = "../progress/model.hdf5"
