@@ -24,6 +24,7 @@ def main(_argv):
     # TODO Load specified model in FLAGS.model_path using keras.models.load_model(FLAGS.model_path) 
     # TODO Execute forward pass for every image and put output features into pandas dataframe storing
     # absolute image path, and catgeory alongside features.
+    # TODO use enforcer function to enforce format of the dataframe
     # TODO save data frame into FLAGS.save_path (in csv?)
 
 if __name__ == '__main__':
