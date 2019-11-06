@@ -17,7 +17,7 @@ DEFAULT_IMAGE_SIZE = (300, 400) # width, height
 
 flags.DEFINE_string('weights_path', None, 'keras model weights')
 flags.DEFINE_string('save_path', None, 'path to save model')
-flags.DEFINE_list('input_size', [300, 400], 'input size in (width, height) format')
+flags.DEFINE_list('input_size', DEFAULT_IMAGE_SIZE, 'input size in (width, height) format')
 flags.DEFINE_integer('model_type', None, 'integer model type - %s'%str(models.ENUM_MODELS_DICT))
 flags.DEFINE_integer('feature_size', DEFAULT_FEATURE_SIZE, 'number of features')
 flags.mark_flag_as_required('weights_path')
