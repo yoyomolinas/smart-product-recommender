@@ -19,6 +19,7 @@ DEFAULT_FEATURE_SIZE = 64
 DEFAULT_BATCH_SIZE = 32
 DEFAULT_NUM_EPOCHS = 30
 DEFAULT_IMAGE_SIZE = (300, 400) # width, height
+DEFAULT_MODEL_TYPE = 1
 
 flags.DEFINE_string('label_path', DEFAULT_LABEL_PATH, 'labels to load')
 flags.DEFINE_string('save_path', DEFAULT_SAVE_PATH, 'path to save model')
@@ -27,7 +28,7 @@ flags.DEFINE_integer('num_an_pairs', DEFAULT_NUM_PAIRS, 'number of anchor negati
 flags.DEFINE_integer('feature_size', DEFAULT_FEATURE_SIZE, 'number of features')
 flags.DEFINE_integer('batch_size', DEFAULT_BATCH_SIZE, 'batch size')
 flags.DEFINE_integer('epochs', DEFAULT_NUM_EPOCHS, 'number of epochs')
-
+flags.DEFINE_integer('model_type', DEFAULT_MODEL_TYPE, 'integer model type - %s'%str(models.ENUM_MODELS_DICT))
 
 def main(_argv):
     input_shape = (DEFAULT_IMAGE_SIZE[1], DEFAULT_IMAGE_SIZE[0], 3)
@@ -50,7 +51,7 @@ def main(_argv):
     negative_input = keras.layers.Input(input_shape, name='negative_input')
 
     # Shared embedding layer for positive and negative items
-    Shared_DNN = models.minixception(input_shape, feature_size = FLAGS.feature_size)
+    Shared_DNN = models.ENUM_MODELS_DICT[FLAGS.model_type](input_shape, feature_size = FLAGS.feature_size)
 
     # Individual outputs
     encoded_anchor = Shared_DNN(anchor_input)

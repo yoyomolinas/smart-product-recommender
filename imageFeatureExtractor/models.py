@@ -173,3 +173,9 @@ def pretrained_mobilenetv1(input_shape, feature_size = 64):
     x = keras.layers.Dense(feature_size,name='embeddings')(x)
     model = keras.models.Model(inputs = mobil.inputs[0], outputs = x)
     return model
+
+ENUM_MODELS_DICT = {
+    0: base,
+    1: minixception,
+    2: bigxception,
+    3: pretrained_mobilenetv1}
