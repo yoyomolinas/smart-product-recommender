@@ -49,7 +49,7 @@ def generate_keras_callbacks(
     if use_tensorboard:
         dt.add('logs', overwrite = overwrite)
 
-    print(dt.path, dt.ckpt.path, dt.logs.path)
+    # print(dt.path, dt.ckpt.path, dt.logs.path)
     # logging.info('Initializing callbacks...')
 
     callbacks = []

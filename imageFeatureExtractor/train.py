@@ -14,7 +14,7 @@ from absl.flags import FLAGS
 """
 This script trains a model on triplets.
 Example usage: 
-    python train.py --save_path ./progress/minix --epochs 10 --batch_size 16 --model_type 1 --input_size 100,133 --feature_size 64 --overwrite
+    python train.py --save_path progress/minix --epochs 10 --batch_size 16 --model_type 1 --input_size 100,133 --feature_size 64 --overwrite
 """
 
 DEFAULT_LABEL_PATH = "data/labels/lcwaikiki100k_labels.csv"
@@ -43,7 +43,7 @@ def main(_argv):
     input_shape = (int(FLAGS.input_size[1]), int(FLAGS.input_size[0]), 3)
     logging.info("Loading data")
     # Load data
-    X, Y, index = utils.load_data(FLAGS.label_path, resize = input_size, limit = 1000, images_as_path = True)
+    X, Y, index = utils.load_data(FLAGS.label_path, resize = input_size, limit = None, images_as_path = True)
     
     # Split train test
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.2, random_state = 42)
@@ -98,7 +98,7 @@ def main(_argv):
         raise e
     finally:
         logging.info("Saving model")
-        model.save_weights(FLAGS.save_path)
+        # model.save_weights(FLAGS.save_path)
 
 if __name__ == '__main__':
     try:
