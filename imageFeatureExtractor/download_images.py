@@ -18,6 +18,7 @@ flags.DEFINE_string('image_dir', None, 'download directory')
 flags.DEFINE_string('meta_path', None, 'input meta file path')
 flags.DEFINE_string('label_path', None, 'output labels file path')
 flags.DEFINE_integer('workers', 8, 'number of worker threads')
+flags.DEFINE_list('image_size', [300, 400], 'image size in (width, height) format')
 flags.mark_flag_as_required('image_dir')
 flags.mark_flag_as_required('label_path')
 flags.mark_flag_as_required('meta_path')
@@ -66,6 +67,7 @@ def main(_argv):
             break
         pname, cat_id, cat_name, raw_img, prod_url = output_queue.get()
         image_path = join(FLAGS.image_dir, '%d.jpg' % count)
+        # TODO import image to cv2 then resize to FLAGS.image_size 
         with open(image_path,'wb') as f:
             f.write(raw_img)
         image_paths.append(image_path)

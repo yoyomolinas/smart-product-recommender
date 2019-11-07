@@ -3,10 +3,15 @@ import numpy as np
 from itertools import permutations
 from tensorflow import keras
 import time
+from PIL import Image
 
 class TripletGenerator(keras.utils.Sequence):
-        def __init__(self, X, Y, ap_pairs= 10, an_pairs = 10, batch_size = 64):
+        def __init__(self, X, Y, ap_pairs= 10, an_pairs = 10, batch_size = 64, shuffle = True, renew = False, images_as_path = False, image_size = None):
             self.batch_size = batch_size
+            self.shuffle = shuffle
+            self.renew = renew
+            self.images_as_path = images_as_path
+            self.image_size = image_size
             self.ap_pairs = ap_pairs
             self.an_pairs = an_pairs
             # self.anchor = X[0]
@@ -16,7 +21,8 @@ class TripletGenerator(keras.utils.Sequence):
             self.labels = Y
             self.unique_labels = np.unique(self.labels)
             self.triplet_index = self.__generate_triplet_index()
-            np.random.shuffle(self.triplet_index)
+            if self.shuffle:
+                np.random.shuffle(self.triplet_index)
 
         def __generate_triplet_index(self):
             triplet_index = [] # (anchor_id, positive_id, negative_id) 
@@ -45,7 +51,10 @@ class TripletGenerator(keras.utils.Sequence):
             return int(len(self.triplet_index) / self.batch_size)
 
         def on_epoch_end(self):
-            np.random.shuffle(self.triplet_index)
+            if self.renew:
+                self.triplet_index = self.__generate_triplet_index()
+            if self.shuffle:
+                np.random.shuffle(self.triplet_index)
 
         def __getitem__(self, i):
             tic = time.time()
@@ -55,6 +64,15 @@ class TripletGenerator(keras.utils.Sequence):
                 anchor = self.images[aid]
                 positive = self.images[pid]
                 negative = self.images[nid]
+                if self.images_as_path:
+                    if self.image_size:
+                        anchor = np.array(Image.open(anchor).resize(self.image_size))
+                        positive = np.array(Image.open(positive).resize(self.image_size))
+                        negative = np.array(Image.open(negative).resize(self.image_size))
+                    else:
+                        anchor = np.array(Image.open(anchor))
+                        positive = np.array(Image.open(positive))
+                        negative = np.array(Image.open(negative))
                 ret.append([anchor, positive, negative])
             ret = np.array(ret)
             anchors, positives, negatives = ret[:, 0], ret[:, 1], ret[:, 2]

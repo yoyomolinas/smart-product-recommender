@@ -5,10 +5,13 @@ from PIL import Image
 import pandas as pd
 from tqdm import tqdm
 from itertools import permutations
+import cv2
+from os.path import join
+import shutil
 
 IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png']
 
-def load_data(label_path, resize = None, limit = None):
+def load_data(label_path, resize = None, limit = None, images_as_path = False):
     """
 
     """
@@ -18,13 +21,17 @@ def load_data(label_path, resize = None, limit = None):
     df = pd.read_csv(label_path, usecols = ['imagepath', 'labelid', 'labelname'])
     i = 0
     for fpath, cid, cname in tqdm(df.to_numpy()):
-        img = Image.open(fpath)
-        if resize:
-            img = img.resize(resize, Image.NEAREST)
-        img_arr = np.array(img)
-        if len(img_arr.shape) != 3:
-            continue
-        X.append(img_arr)
+        if images_as_path:
+            X.append(fpath)
+        else:
+            img = cv2.imread(fpath)
+            if resize:
+                img = cv2.resize(img, (resize[1], resize[0]))
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img_arr = np.array(img)
+            if len(img_arr.shape) != 3:
+                continue
+            X.append(img_arr)
         Y.append(cid)
         category_index[cid] = cname
         if limit:
@@ -86,4 +93,69 @@ def generate_triplet(x, y, ap_pairs=10, an_pairs=10):
                 
     # return np.array(triplet_pairs)
     return anchor, pos, neg
+
+class DirectoryTree:
+    """
+    A class to ease operations in directories
+    """
+    def __init__(self, path = None, parent = None, depth = 0):
+        self.parent = parent
+        self.path = path
+        self.directories = {}
+        self.depth = depth
+        if depth == 0:
+            self.name = self.path
+        else:
+            self.name = self.path.split('/')[-1]
+
+        if os.path.isfile(self.path):
+            raise OSError('Please specify a directory not a file!')
+
+        if not os.path.exists(self.path):
+            os.makedirs(self.path)
+        else:
+            # Iterate through all directories in self.path, and add to self.directories
+            for dir in os.listdir(self.path):
+                if os.path.isdir(join(self.path, dir)):
+                    self.add(dir)
+
+    def add(self, *names, overwrite = False):
+        if not self.exists():
+            raise OSError('This directory tree is no longer valid.')
+        for name in names:
+            if hasattr(self, name) and overwrite:
+                self.directories[name].remove(hard = True)
+                # raise OSError('path <%s> already exists in this file structure' % join(self.path, name))
+
+            setattr(self, name, DirectoryTree(path = join(self.path, name), parent = self, depth = self.depth + 1))
+            self.directories[name] = getattr(self, name)
+
+    def print_all(self):
+        if not self.exists():
+            raise OSError('This directory tree is no longer valid.')
+        cur_path = self.path.split('/')[-1]
+        s = ''
+        if self.depth != 0:
+            s = '|'
+            for i in range(self.depth):
+                s += '___'
+
+        print("%s%s"%(s, cur_path))
+        for name, d in self.directories.items():
+            d.print_all()
+
+    def remove(self, hard = False):
+        if not self.exists():
+            raise OSError('This directory tree is no longer valid.')
+        if hard:
+            shutil.rmtree(self.path)
+        else:
+            os.rmdir(self.path)
+
+        if self.parent is not None:
+            delattr(self.parent, self.name)
+            del self.parent.directories[self.name]
+
+    def exists(self):
+        return os.path.isdir(self.path)
 

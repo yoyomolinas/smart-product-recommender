@@ -2,6 +2,7 @@ import utils
 import loss
 import batchgen
 import models
+import callbacks
 import numpy as np
 from tensorflow import keras
 from matplotlib import pyplot as plt
@@ -13,14 +14,12 @@ from absl.flags import FLAGS
 """
 This script trains a model on triplets.
 Example usage: 
-    python train.py --save_path ./progress/minix/weights.hdf5 --epochs 10 --batch_size 16 --model_type 1 --input_size 100,133 --feature_size 64
+    python train.py --save_path ./progress/minix --epochs 10 --batch_size 16 --model_type 1 --input_size 100,133 --feature_size 64 --overwrite
 """
 
-# Example command: 
-
-DEFAULT_LABEL_PATH = "data/labels/lcwaikiki10k_labels.csv"
-DEFAULT_SAVE_PATH = "../progress/weights.hdf5"
-DEFAULT_NUM_PAIRS = 30
+DEFAULT_LABEL_PATH = "data/labels/lcwaikiki100k_labels.csv"
+DEFAULT_SAVE_PATH = "progress/test/"
+DEFAULT_NUM_PAIRS = 50
 DEFAULT_FEATURE_SIZE = 64
 DEFAULT_BATCH_SIZE = 32
 DEFAULT_NUM_EPOCHS = 30
@@ -28,7 +27,8 @@ DEFAULT_IMAGE_SIZE = [300, 400] # width, height
 DEFAULT_MODEL_TYPE = 1
 
 flags.DEFINE_string('label_path', DEFAULT_LABEL_PATH, 'labels to load')
-flags.DEFINE_string('save_path', DEFAULT_SAVE_PATH, 'path to save model')
+flags.DEFINE_string('save_path', DEFAULT_SAVE_PATH, 'path to save checkpoints and logs')
+flags.DEFINE_boolean('overwrite', False, 'Overwrite given save path')
 flags.DEFINE_integer('num_ap_pairs', DEFAULT_NUM_PAIRS, 'number of anchor positive pairs')
 flags.DEFINE_integer('num_an_pairs', DEFAULT_NUM_PAIRS, 'number of anchor negative pairs')
 flags.DEFINE_integer('feature_size', DEFAULT_FEATURE_SIZE, 'number of features')
@@ -43,15 +43,15 @@ def main(_argv):
     input_shape = (int(FLAGS.input_size[1]), int(FLAGS.input_size[0]), 3)
     logging.info("Loading data")
     # Load data
-    X, Y, index = utils.load_data(FLAGS.label_path, resize = input_size, limit = None)
-
+    X, Y, index = utils.load_data(FLAGS.label_path, resize = input_size, limit = 1000, images_as_path = True)
+    
     # Split train test
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.2, random_state = 42)
-
+    
     logging.info("Creating batch train/test generators")
     # Define Triplet Generator
-    tripletgen_train = batchgen.TripletGenerator(X_train, Y_train, ap_pairs = FLAGS.num_ap_pairs, an_pairs = FLAGS.num_an_pairs, batch_size = FLAGS.batch_size)
-    tripletgen_test = batchgen.TripletGenerator(X_test, Y_test, ap_pairs = FLAGS.num_ap_pairs, an_pairs = FLAGS.num_an_pairs, batch_size = FLAGS.batch_size)
+    tripletgen_train = batchgen.TripletGenerator(X_train, Y_train, ap_pairs = FLAGS.num_ap_pairs, an_pairs = FLAGS.num_an_pairs, batch_size = FLAGS.batch_size, shuffle = True, renew = True, images_as_path = True, image_size = input_size)
+    tripletgen_test = batchgen.TripletGenerator(X_test, Y_test, ap_pairs = FLAGS.num_ap_pairs, an_pairs = FLAGS.num_an_pairs, batch_size = FLAGS.batch_size, shuffle = False, renew = False, images_as_path = True, image_size = input_size)
 
     logging.info("Creating network")
     # Prepare network
@@ -87,10 +87,15 @@ def main(_argv):
             steps_per_epoch = 3000,
             validation_data=tripletgen_test, 
             validation_steps = 100,
-            max_queue_size = 100,
-            epochs=FLAGS.epochs, verbose = 1)
-    except KeyboardInterrupt:
-        pass
+            max_queue_size = 1000,
+            epochs=FLAGS.epochs, 
+            verbose = 1,
+            use_multiprocessing = True,
+            workers = 6,
+            callbacks = callbacks.generate_keras_callbacks(FLAGS.save_path, overwrite = FLAGS.overwrite))
+
+    except Exception as e:
+        raise e
     finally:
         logging.info("Saving model")
         model.save_weights(FLAGS.save_path)
