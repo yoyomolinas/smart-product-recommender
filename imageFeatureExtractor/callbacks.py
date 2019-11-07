@@ -54,14 +54,14 @@ def generate_keras_callbacks(
 
     callbacks = []
     if use_save_checkpoint:
-        checkpoint_manager = cb.ModelCheckpoint(join(dt.ckpt.path, "{val_loss:.5f}.hdf5"),
+        checkpoint_manager = cb.ModelCheckpoint(filepath=join(dt.ckpt.path, "weights.{val_loss:.5f}.hdf5"),
                                                 monitor="val_loss",
                                                 verbose=1,
                                                 mode="auto",
                                                 save_best_only = True,
                                                 save_weights_only = True)
         callbacks.append(checkpoint_manager)
-    
+
     if use_tensorboard:
         tensorboard = cb.TensorBoard(log_dir=dt.logs.path)
         callbacks.append(tensorboard)

@@ -1,0 +1,2 @@
+model_checkpoint_path: "minix"
+all_model_checkpoint_paths: "minix"
