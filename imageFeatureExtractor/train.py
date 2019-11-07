@@ -13,14 +13,14 @@ from absl.flags import FLAGS
 """
 This script trains a model on triplets.
 Example usage: 
-    python train.py --save_path ./progress/minix/weights.hdf5 --epochs 60 --batch_size 32 --model_type 1 --input_size 100,133
+    python train.py --save_path ./progress/minix/weights.hdf5 --epochs 10 --batch_size 16 --model_type 1 --input_size 100,133 --feature_size 64
 """
 
 # Example command: 
 
-DEFAULT_LABEL_PATH = "data/labels/lcwaikiki_labels.csv"
-DEFAULT_SAVE_PATH = "../progress/model.hdf5"
-DEFAULT_NUM_PAIRS = 150
+DEFAULT_LABEL_PATH = "data/labels/lcwaikiki10k_labels.csv"
+DEFAULT_SAVE_PATH = "../progress/weights.hdf5"
+DEFAULT_NUM_PAIRS = 30
 DEFAULT_FEATURE_SIZE = 64
 DEFAULT_BATCH_SIZE = 32
 DEFAULT_NUM_EPOCHS = 30

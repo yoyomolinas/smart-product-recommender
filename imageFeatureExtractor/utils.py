@@ -15,7 +15,7 @@ def load_data(label_path, resize = None, limit = None):
     assert os.path.isfile(label_path)
     X, Y = [], []
     category_index = {} # category index
-    df = pd.read_csv(label_path, usecols = ['path', 'label_id', 'label_name'])
+    df = pd.read_csv(label_path, usecols = ['imagepath', 'labelid', 'labelname'])
     i = 0
     for fpath, cid, cname in tqdm(df.to_numpy()):
         img = Image.open(fpath)
