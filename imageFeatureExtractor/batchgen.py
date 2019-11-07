@@ -2,6 +2,7 @@ import random
 import numpy as np
 from itertools import permutations
 from tensorflow import keras
+import time
 
 class TripletGenerator(keras.utils.Sequence):
         def __init__(self, X, Y, ap_pairs= 10, an_pairs = 10, batch_size = 64):
@@ -41,12 +42,13 @@ class TripletGenerator(keras.utils.Sequence):
             return np.array(triplet_index)
 
         def __len__(self):
-            return int(len(self.labels) / self.batch_size)
+            return int(len(self.triplet_index) / self.batch_size)
 
         def on_epoch_end(self):
             np.random.shuffle(self.triplet_index)
 
         def __getitem__(self, i):
+            tic = time.time()
             ret = []
             for j in range(i, i + self.batch_size):
                 aid, pid, nid = self.triplet_index[j]
@@ -57,4 +59,6 @@ class TripletGenerator(keras.utils.Sequence):
             ret = np.array(ret)
             anchors, positives, negatives = ret[:, 0], ret[:, 1], ret[:, 2]
             dummy = np.zeros((self.batch_size, 1))
+            toc = time.time()
+            # print("Time it took to generate batch:", round(toc-tic, 3))
             return [anchors, positives, negatives], dummy

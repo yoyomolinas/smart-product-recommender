@@ -18,7 +18,7 @@ Example usage:
 
 
 DEFAULT_FEATURE_SIZE = 64
-DEFAULT_IMAGE_SIZE = (300, 400) # width, height
+DEFAULT_IMAGE_SIZE = [300, 400] # width, height
 
 flags.DEFINE_string('weights_path', None, 'keras model weights')
 flags.DEFINE_string('save_path', None, 'path to save model')

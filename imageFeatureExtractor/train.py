@@ -13,7 +13,7 @@ from absl.flags import FLAGS
 """
 This script trains a model on triplets.
 Example usage: 
-    python train.py --save_path ../progress/minix/model.hdf5 --epochs 60 --batch_size 32
+    python train.py --save_path ./progress/minix/weights.hdf5 --epochs 60 --batch_size 32 --model_type 1 --input_size 100,133
 """
 
 # Example command: 
@@ -24,7 +24,7 @@ DEFAULT_NUM_PAIRS = 150
 DEFAULT_FEATURE_SIZE = 64
 DEFAULT_BATCH_SIZE = 32
 DEFAULT_NUM_EPOCHS = 30
-DEFAULT_IMAGE_SIZE = (300, 400) # width, height
+DEFAULT_IMAGE_SIZE = [300, 400] # width, height
 DEFAULT_MODEL_TYPE = 1
 
 flags.DEFINE_string('label_path', DEFAULT_LABEL_PATH, 'labels to load')
@@ -33,14 +33,17 @@ flags.DEFINE_integer('num_ap_pairs', DEFAULT_NUM_PAIRS, 'number of anchor positi
 flags.DEFINE_integer('num_an_pairs', DEFAULT_NUM_PAIRS, 'number of anchor negative pairs')
 flags.DEFINE_integer('feature_size', DEFAULT_FEATURE_SIZE, 'number of features')
 flags.DEFINE_integer('batch_size', DEFAULT_BATCH_SIZE, 'batch size')
+flags.DEFINE_list('input_size', DEFAULT_IMAGE_SIZE, 'input size in (width, height) format')
 flags.DEFINE_integer('epochs', DEFAULT_NUM_EPOCHS, 'number of epochs')
 flags.DEFINE_integer('model_type', DEFAULT_MODEL_TYPE, 'integer model type - %s'%str(models.ENUM_MODELS_DICT))
 
 def main(_argv):
-    input_shape = (DEFAULT_IMAGE_SIZE[1], DEFAULT_IMAGE_SIZE[0], 3)
+    assert FLAGS.model_type in models.ENUM_MODELS_DICT.keys()
+    input_size = (int(FLAGS.input_size[0]) , int(FLAGS.input_size[1])) # (width, height)
+    input_shape = (int(FLAGS.input_size[1]), int(FLAGS.input_size[0]), 3)
     logging.info("Loading data")
     # Load data
-    X, Y, index = utils.load_data(FLAGS.label_path, resize = DEFAULT_IMAGE_SIZE, limit = None)
+    X, Y, index = utils.load_data(FLAGS.label_path, resize = input_size, limit = None)
 
     # Split train test
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.2, random_state = 42)
@@ -78,13 +81,19 @@ def main(_argv):
 
     logging.info("Starting training")
     # Train model
-    model.fit_generator(
-        tripletgen_train,
-        validation_data=tripletgen_test, 
-        epochs=FLAGS.epochs, verbose = 1)
-
-    logging.info("Saving model")
-    model.save(FLAGS.save_path)
+    try:
+        model.fit_generator(
+            tripletgen_train,
+            steps_per_epoch = 3000,
+            validation_data=tripletgen_test, 
+            validation_steps = 100,
+            max_queue_size = 100,
+            epochs=FLAGS.epochs, verbose = 1)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        logging.info("Saving model")
+        model.save_weights(FLAGS.save_path)
 
 if __name__ == '__main__':
     try:
