@@ -1,4 +1,7 @@
-imageExtractor/
+*.jpg 
+*.png
+*.jpeg
 *.csv
 *.zip
-ipynb_checkpoints/
+*.hdf5
+*.ipynb_checkpoints/
