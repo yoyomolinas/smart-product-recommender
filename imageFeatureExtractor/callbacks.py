@@ -12,19 +12,18 @@ def keep_limited_checkpoints(base, n=8):
     '''
     def f(epoch):
         import os
-
-        #        logging.debug('Keeping checkpoints limited. Current epoch: %i' %epoch)
         if len(os.listdir(base)) <= n:
             return
 
         max_loss = 0
         rm_cp = None
         for cp in os.listdir(base):
-            if cp[:cp.find('hdf5') - 1] == 'nan':
+            if cp[(len('weights') + 1):cp.find('hdf5') - 1] == 'nan':
                 rm_cp = cp
                 break
-            if float(cp[:cp.find('hdf5') - 1]) > max_loss:
-                max_loss = float(cp[:cp.find('hdf5') - 1])
+            
+            if float(cp[(len('weights') + 1):cp.find('hdf5') - 1]) > max_loss:
+                max_loss = float(cp[len('weights') + 1:cp.find('hdf5') - 1])
                 rm_cp = cp
 
         if rm_cp is not None:
@@ -58,7 +57,7 @@ def generate_keras_callbacks(
                                                 monitor="val_loss",
                                                 verbose=1,
                                                 mode="auto",
-                                                save_best_only = True,
+                                                save_best_only = False,
                                                 save_weights_only = True)
         callbacks.append(checkpoint_manager)
 

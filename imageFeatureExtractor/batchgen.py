@@ -21,8 +21,7 @@ class TripletGenerator(keras.utils.Sequence):
             self.labels = Y
             self.unique_labels = np.unique(self.labels)
             self.triplet_index = self.__generate_triplet_index()
-            if self.shuffle:
-                np.random.shuffle(self.triplet_index)
+            np.random.shuffle(self.triplet_index)
 
         def __generate_triplet_index(self):
             triplet_index = [] # (anchor_id, positive_id, negative_id) 

@@ -19,7 +19,7 @@ Example usage:
 
 DEFAULT_LABEL_PATH = "data/labels/lcwaikiki100k_labels.csv"
 DEFAULT_SAVE_PATH = "progress/test/"
-DEFAULT_NUM_PAIRS = 50
+DEFAULT_NUM_PAIRS = 70
 DEFAULT_FEATURE_SIZE = 64
 DEFAULT_BATCH_SIZE = 32
 DEFAULT_NUM_EPOCHS = 30
@@ -29,6 +29,7 @@ DEFAULT_MODEL_TYPE = 1
 flags.DEFINE_string('label_path', DEFAULT_LABEL_PATH, 'labels to load')
 flags.DEFINE_string('save_path', DEFAULT_SAVE_PATH, 'path to save checkpoints and logs')
 flags.DEFINE_boolean('overwrite', False, 'Overwrite given save path')
+flags.DEFINE_string('from_ckpt', None, 'path to continue training on checkpoint')
 flags.DEFINE_integer('num_ap_pairs', DEFAULT_NUM_PAIRS, 'number of anchor positive pairs')
 flags.DEFINE_integer('num_an_pairs', DEFAULT_NUM_PAIRS, 'number of anchor negative pairs')
 flags.DEFINE_integer('feature_size', DEFAULT_FEATURE_SIZE, 'number of features')
@@ -37,8 +38,10 @@ flags.DEFINE_list('input_size', DEFAULT_IMAGE_SIZE, 'input size in (width, heigh
 flags.DEFINE_integer('epochs', DEFAULT_NUM_EPOCHS, 'number of epochs')
 flags.DEFINE_integer('model_type', DEFAULT_MODEL_TYPE, 'integer model type - %s'%str(models.ENUM_MODELS_DICT))
 
+
 def main(_argv):
     assert FLAGS.model_type in models.ENUM_MODELS_DICT.keys()
+    assert not ((FLAGS.overwrite) and (FLAGS.from_ckpt is not None))
     input_size = (int(FLAGS.input_size[0]) , int(FLAGS.input_size[1])) # (width, height)
     input_shape = (int(FLAGS.input_size[1]), int(FLAGS.input_size[0]), 3)
     logging.info("Loading data")
@@ -79,26 +82,23 @@ def main(_argv):
 
     model.summary()
 
-    logging.info("Starting training")
-    # Train model
-    try:
-        model.fit_generator(
-            tripletgen_train,
-            steps_per_epoch = 3000,
-            validation_data=tripletgen_test, 
-            validation_steps = 100,
-            max_queue_size = 1000,
-            epochs=FLAGS.epochs, 
-            verbose = 1,
-            use_multiprocessing = True,
-            workers = 6,
-            callbacks = callbacks.generate_keras_callbacks(FLAGS.save_path, overwrite = FLAGS.overwrite))
+    if FLAGS.from_ckpt is not None:
+        logging.info("Loading weights from %s"%FLAGS.from_ckpt)
+        model.load_weights(FLAGS.from_ckpt)
 
-    except Exception as e:
-        raise e
-    finally:
-        logging.info("Saving model")
-        # model.save_weights(FLAGS.save_path)
+    logging.info("Starting training")
+    model.fit_generator(
+        tripletgen_train,
+        steps_per_epoch = 5000,
+        validation_data=tripletgen_test, 
+        validation_steps = 200,
+        max_queue_size = 1000,
+        epochs=FLAGS.epochs, 
+        verbose = 1,
+        use_multiprocessing = True,
+        workers = 4,
+        callbacks = callbacks.generate_keras_callbacks(FLAGS.save_path, 
+        overwrite = FLAGS.overwrite))
 
 if __name__ == '__main__':
     try:
