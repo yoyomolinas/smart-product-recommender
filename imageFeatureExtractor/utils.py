@@ -13,7 +13,7 @@ IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png']
 
 def load_data(label_path, resize = None, limit = None, images_as_path = False):
     """
-
+    Loading function is implemented custom for every data format.
     """
     assert os.path.isfile(label_path)
     X, Y = [], []

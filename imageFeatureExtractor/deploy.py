@@ -13,7 +13,7 @@ from absl.flags import FLAGS
 """
 This script deploys a model trained on triplets.
 Example usage: 
-    python deploy.py --weights_path progress/minix/weights.hdf5 --save_path deploy/minix/model.hdf5 --input_size 100,133 --model_type 1
+    python deploy.py --weights_path progress/pretrn_imagenet_mobilv1/ckpt/weights. --save_path deploy/pretrn_imagenet_mobilv1/model.hdf5 --input_size 100,133 --model_type 3
 """
 
 

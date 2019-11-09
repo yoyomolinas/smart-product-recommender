@@ -13,7 +13,7 @@ from tensorflow.keras.regularizers import l2
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras import layers
 
-def base(input_shape, feature_size = 64):
+def base(input_shape, feature_size = 64, output_size = None, output_activation = None):
     """
     Base network to be shared.
     """
@@ -24,9 +24,12 @@ def base(input_shape, feature_size = 64):
     model.add(keras.layers.MaxPooling2D((2,2),(2,2),padding='same',name='pool2'))
     model.add(keras.layers.Flatten(name='flatten'))
     model.add(keras.layers.Dense(feature_size,name='embeddings'))
+    if output_size:
+        x = keras.layers.Dense(output_size,name='classification', activation=output_activation)(x)
+
     return model
 
-def minixception(input_shape, feature_size = 64):
+def minixception(input_shape, feature_size = 64, output_size = None, output_activation = None):
     regularization = l2(0.01)
     img_input = Input(input_shape)
     x = Conv2D(32, (3, 3), strides=(1, 1), kernel_regularizer=regularization,
@@ -112,9 +115,12 @@ def minixception(input_shape, feature_size = 64):
 
     g = GlobalAveragePooling2D()(x)
     x = layers.Dense(feature_size)(g)
+    if output_size:
+        x = keras.layers.Dense(output_size,name='classification', activation=output_activation)(x)
+
     return keras.models.Model(inputs=img_input, outputs = x)
 
-def bigxception(input_shape, feature_size = 64):
+def bigxception(input_shape, feature_size = 64, output_size = None, output_activation = None):
     regularization = l2(0.01)
     img_input = Input(input_shape)
     x = Conv2D(32, (3, 3), strides=(2, 2), use_bias=False)(img_input)
@@ -165,12 +171,17 @@ def bigxception(input_shape, feature_size = 64):
 
     x = Flatten()(x)
     x = Dense(feature_size)(x)
+    if output_size:
+        x = keras.layers.Dense(output_size,name='classification', activation=output_activation)(x)
+
     return keras.models.Model(inputs=img_input, outputs = x)
 
-def pretrained_mobilenetv1(input_shape, feature_size = 64):
+def pretrained_mobilenetv1(input_shape, feature_size = 64, output_size = None, output_activation = None):
     mobil = keras.applications.mobilenet.MobileNet(input_shape=input_shape, include_top=False, weights='imagenet', pooling='avg')
     x = mobil.outputs[0]
     x = keras.layers.Dense(feature_size,name='embeddings')(x)
+    if output_size:
+        x = keras.layers.Dense(output_size,name='classification', activation=output_activation)(x)
     model = keras.models.Model(inputs = mobil.inputs[0], outputs = x)
     return model
 

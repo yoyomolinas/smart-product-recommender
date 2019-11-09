@@ -55,10 +55,26 @@ class TripletGenerator(keras.utils.Sequence):
             if self.shuffle:
                 np.random.shuffle(self.triplet_index)
 
+        '''
+        Retrieve bounds for specified index and batch size in self.config
+        '''
+        def __get_bounds__(self, idx):
+            #Define bounds of the image range in current batch
+            l_bound = idx*self.batch_size #left bound
+            r_bound = (idx+1)*self.batch_size #right bound
+
+            if r_bound > len(self.triplet_index):
+                r_bound = len(self.triplet_index)
+                # Keep batch size stable when length of images is not a multiple of batch size.
+                l_bound = r_bound - self.batch_size
+            return l_bound, r_bound
+
+
         def __getitem__(self, i):
             tic = time.time()
             ret = []
-            for j in range(i, i + self.batch_size):
+            l_bound, r_bound = self.__get_bounds__(i)
+            for j in range(l_bound, r_bound):
                 aid, pid, nid = self.triplet_index[j]
                 anchor = self.images[aid]
                 positive = self.images[pid]
@@ -72,6 +88,58 @@ class TripletGenerator(keras.utils.Sequence):
                         anchor = np.array(Image.open(anchor))
                         positive = np.array(Image.open(positive))
                         negative = np.array(Image.open(negative))
+                ret.append([anchor, positive, negative])
+            ret = np.array(ret)
+            anchors, positives, negatives = ret[:, 0], ret[:, 1], ret[:, 2]
+            dummy = np.zeros((self.batch_size, 1))
+            toc = time.time()
+            # print("Time it took to generate batch:", round(toc-tic, 3))
+            return [anchors, positives, negatives], dummy
+
+class ImageGenerator(keras.utils.Sequence):
+        def __init__(self, X, Y, batch_size = 64, shuffle = True, image_size = None):
+            self.batch_size = batch_size
+            self.shuffle = shuffle
+            self.image_size = image_size
+            self.index = np.arange(0, len(X))
+            self.images = X
+            self.labels = Y
+
+        def __len__(self):
+            return int(len(self.Y) / self.batch_size)
+
+        def on_epoch_end(self):
+            if self.shuffle:
+                np.random.shuffle(self.index)
+
+        '''
+        Retrieve bounds for specified index and batch size in self.config
+        '''
+        def __get_bounds__(self, idx):
+            #Define bounds of the image range in current batch
+            l_bound = idx*self.batch_size #left bound
+            r_bound = (idx+1)*self.batch_size #right bound
+
+            if r_bound > len(self.X):
+                r_bound = len(self.X)
+                # Keep batch size stable when length of images is not a multiple of batch size.
+                l_bound = r_bound - self.batch_size
+            return l_bound, r_bound
+
+
+        def __getitem__(self, i):
+            ret = []
+            l_bound, r_bound = self.__get_bounds__(i)
+            for j in range(l_bound, r_bound):
+                idx = self.index[j]
+                if self.image_size:
+                    anchor = np.array(Image.open(anchor).resize(self.image_size))
+                    positive = np.array(Image.open(positive).resize(self.image_size))
+                    negative = np.array(Image.open(negative).resize(self.image_size))
+                else:
+                    anchor = np.array(Image.open(anchor))
+                    positive = np.array(Image.open(positive))
+                    negative = np.array(Image.open(negative))
                 ret.append([anchor, positive, negative])
             ret = np.array(ret)
             anchors, positives, negatives = ret[:, 0], ret[:, 1], ret[:, 2]
