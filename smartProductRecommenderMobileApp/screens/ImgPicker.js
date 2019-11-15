@@ -3,7 +3,7 @@ import { View, Button, Image, Text, StyleSheet, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 
-import colors from '../constants/colors';
+import colors from './constants/colors';
 
 const ImgPicker = props => {
   const [pickedImage , setPickedImage] = useState();
@@ -55,7 +55,7 @@ const ImgPicker = props => {
       {!pickedImage ? (
         <Button
         title="Take Image"
-        color={.primary}
+        color={colors.primary}
         onPress={takeImageHandler}
           />) : (
           <Button
