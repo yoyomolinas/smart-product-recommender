@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { View, Button, Image, Text, StyleSheet, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-
+import {FileSystem} from 'expo';
 import colors from '../constants/colors';
 
 const ImgPicker = props => {
@@ -34,8 +34,9 @@ const ImgPicker = props => {
   };
 
   const saveImageHandler = () => {
-    console.log("The image is sent to the server!");
-  }
+    if(pickedImage)
+    console.log("Image is saved to picked image");
+  };
   return (
     <View style={styles.imagePicker}>
     <Image source= {require('../assets/smartProductReco.png')}
@@ -55,7 +56,7 @@ const ImgPicker = props => {
       {!pickedImage ? (
         <Button
         title="Take Image"
-        color={.primary}
+        color={colors.primary}
         onPress={takeImageHandler}
           />) : (
           <Button

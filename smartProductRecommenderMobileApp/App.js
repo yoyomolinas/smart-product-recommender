@@ -17,11 +17,11 @@ export default function App() {
 
   const cameraHandler = cameraMode => {
     setCameraMode(cameraMode);
-  }
+  };
 
   const imageTakenHandler = pickedImage => {
     setTakenImage(pickedImage);
-  }
+  };
 
   let content = <MainPage onMainPageLoad={mainPageHandler} />;
 

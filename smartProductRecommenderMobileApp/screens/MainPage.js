@@ -22,9 +22,9 @@ const MainPage = props => {
   const nameInputHandler = inputText => {
     setEnteredValue(inputText.replace(/[^A-Za-z]/g, ''));
   };
-  constAlertHandler = () => {
+  const constAlertHandler = () => {
     console.log("Do Nothing")
-  }
+  };
 
   const confirmInputHandler = () => {
     const specifiedName = enteredValue
