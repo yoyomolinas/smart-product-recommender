@@ -1,8 +1,10 @@
-class Item {
-    constructor(id,imageUrl) {
+class Product {
+    constructor(id,imageUrl,maxPrice,minPrice) {
         this.id = id;
         this.imageUrl = imageUrl;
+        this.maxPrice = maxPrice;
+        this.minPrice = minPrice;
     }
 }
 
-export default Item;
+export default Product;

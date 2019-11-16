@@ -6,8 +6,8 @@ import * as Permissions from 'expo-permissions';
 import colors from '../constants/colors';
 
 const ImgPicker = props => {
-    const [wantedProduct, setWantedProduct] = useState();
     const [pickedImage, setPickedImage] = useState();
+    const [imageData, setImageData] = useState();
     const [minPrice, setMinPrice] = useState();
     const [maxPrice, setMaxPrice] = useState();
 
@@ -31,9 +31,11 @@ const ImgPicker = props => {
         const testImage = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [4, 3],
+            base64: true,
             quality: 0.5
         });
         setPickedImage(testImage.uri);
+        setImageData(testImage.base64);
     };
     const priceRangeHandler = () => {
         if (maxPrice < minPrice) {
@@ -54,7 +56,7 @@ const ImgPicker = props => {
             if (priceRangeHandler()) {
                 props.onSetMax(maxPrice);
                 props.onSetMin(minPrice);
-                props.onImagePicked(pickedImage);
+                props.onImageData(imageData);
             }
         }
     };
