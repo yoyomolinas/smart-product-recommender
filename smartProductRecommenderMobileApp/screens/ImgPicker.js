@@ -123,7 +123,7 @@ const ImgPicker = props => {
                 </Text>
             </View>
         </View>
-    );
+    ); 
 };
 
 const styles = StyleSheet.create({
