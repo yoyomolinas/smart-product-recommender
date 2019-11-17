@@ -22,12 +22,9 @@ const MainPage = props => {
   const nameInputHandler = inputText => {
     setEnteredValue(inputText.replace(/[^A-Za-z]/g, ''));
   };
-  constAlertHandler = () => {
-    console.log("Do Nothing")
-  }
 
   const confirmInputHandler = () => {
-    const specifiedName = enteredValue
+    const specifiedName = enteredValue;
     if (!isNaN(enteredValue)) {
       Alert.alert(
         'You did not enter anything!',
@@ -43,12 +40,15 @@ const MainPage = props => {
     Keyboard.dismiss();
   };
 
-  let confirmedOutput;
-
+  let screenOutput;
   if (confirmed) {
-    confirmedOutput = (
-      <View >
-      <Card style={styles.outputContainer}>
+    screenOutput = (
+      <View style={styles.screen}>
+        <Image source= {require('../assets/smartProductReco.png')}
+               style ={styles.image}
+               resizeMode = 'cover'
+        />
+        <Card style={styles.outputContainer}>
         <View style={styles.productNav}>
         <Text style={styles.text}>Welcome {selectedName}</Text>
         </View>
@@ -60,6 +60,38 @@ const MainPage = props => {
     </View>
     );
   }
+  else{
+    screenOutput = (
+        <View style={styles.screen}>
+          <Image source= {require('../assets/smartProductReco.png')}
+                 style ={styles.image}
+                 resizeMode = 'cover'
+          />
+          <Card style={styles.outputContainer}>
+            <Text style={styles.text}>Enter Your Name</Text>
+            <Input
+                style={styles.input}
+                blurOnSubmit
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="default"
+                maxLength={10}
+                onChangeText={nameInputHandler}
+                value={enteredValue}
+            />
+            <View style={styles.buttonContainer}>
+              <View style={styles.button}>
+                <Button
+                    title="Confirm"
+                    onPress={confirmInputHandler}
+                    color={Colors.primary}
+                />
+              </View>
+            </View>
+          </Card>
+        </View>
+    );
+  }
 
   return (
     <TouchableWithoutFeedback
@@ -67,35 +99,7 @@ const MainPage = props => {
         Keyboard.dismiss();
       }}
     >
-      <View style={styles.screen}>
-        <Image source= {require('../assets/smartProductReco.png')}
-              style ={styles.image}
-              resizeMode = 'cover'
-        />
-        <Card style={styles.outputContainer}>
-          <Text style={styles.text}>Enter Your Name</Text>
-          <Input
-            style={styles.input}
-            blurOnSubmit
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="default"
-            maxLength={10}
-            onChangeText={nameInputHandler}
-            value={enteredValue}
-          />
-          <View style={styles.buttonContainer}>
-            <View style={styles.button}>
-              <Button
-                title="Confirm"
-                onPress={confirmInputHandler}
-                color={Colors.primary}
-              />
-            </View>
-          </View>
-        </Card>
-        {confirmedOutput}
-      </View>
+      {screenOutput}
     </TouchableWithoutFeedback>
   );
 };

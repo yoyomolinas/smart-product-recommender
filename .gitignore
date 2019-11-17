@@ -4,3 +4,4 @@
 *.zip
 *.hdf5
 *.ipynb_checkpoints/
+*.idea/*
