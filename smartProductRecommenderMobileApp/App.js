@@ -4,9 +4,7 @@ import Header from './components/Header';
 import MainPage from './screens/MainPage';
 import ProductShot from './screens/ProductShot';
 import ImgPicker from './screens/ImgPicker';
-import customData from './db.json';
-import FileSystem from 'react-native-filesystem';
-import {write} from "react-native-fs";
+
 
 export default function App() {
     const [userName, setUserName] = useState();
