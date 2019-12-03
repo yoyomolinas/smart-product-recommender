@@ -4,7 +4,7 @@ import {View, Text, StyleSheet, Button, Image} from 'react-native';
 import Card from '../components/Card';
 import Colors from '../constants/colors';
 const ProductShot = props => {
-    const [cameraMode, setCameraMode] = useState(false);
+    // const [cameraMode, setCameraMode] = useState(false);
     return (
         <View style={styles.screen}>
             <Image source={require('../assets/smartProductReco.png')}
@@ -23,8 +23,7 @@ const ProductShot = props => {
                     <Button
                         title="Go to the Camera"
                         onPress={() => {
-                            setCameraMode(true);
-                            props.onCameraPageClick(cameraMode);
+                            props.onCameraPageClick(true);
                         }}
                         color={Colors.primary}
                     />
