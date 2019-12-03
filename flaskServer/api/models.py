@@ -5,3 +5,8 @@ class Product(db.Model):
     image = db.Column(db.String(10))
     minPrice = db.Column(db.Integer)
     maxPrice = db.Column(db.Integer)
+
+class MatchingProduct(db.Model):
+    matching_id = db.Column(db.Integer)
+    imageUrl = db.Column(db.String(100)) 
+    productUrl = db.Column(db.String(100))

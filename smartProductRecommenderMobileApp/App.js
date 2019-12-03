@@ -4,6 +4,8 @@ import Header from './components/Header';
 import MainPage from './screens/MainPage';
 import ProductShot from './screens/ProductShot';
 import ImgPicker from './screens/ImgPicker';
+import RecommendationScreen from './screens/RecommendationScreen';
+
 
 
 export default function App() {
@@ -12,10 +14,6 @@ export default function App() {
     const [imageData, setImageData] = useState();
     const [max_price, setMax] = useState();
     const [min_price, setMin] = useState();
-
-    // useEffect(()=>{
-    //
-    // });
 
     const mainPageHandler = selectedName => {
         setUserName(selectedName);
@@ -48,7 +46,7 @@ export default function App() {
 
     if (max_price && min_price && imageData) {
         console.log(imageData.substring(0, 10));
-
+        content = <RecommendationScreen/>
     }
 
     return (
