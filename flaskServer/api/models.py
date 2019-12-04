@@ -7,6 +7,9 @@ class Product(db.Model):
     maxPrice = db.Column(db.Integer)
 
 class MatchingProduct(db.Model):
+    id = db.Column(db.Integer,primary_key = True)
     matching_id = db.Column(db.Integer)
     imageUrl = db.Column(db.String(100)) 
     productUrl = db.Column(db.String(100))
+
+    
