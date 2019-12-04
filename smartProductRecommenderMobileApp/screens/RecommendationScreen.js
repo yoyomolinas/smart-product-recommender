@@ -6,7 +6,7 @@ const RecommendationScreen = props => {
     return (
         <FlatList
             keyExtractor = {companies => companies.name}
-            data = {companies}
+            data = {props.productData}
             renderItem={({item}) => {
                 return (<View>
                     <Text style={styles.textStyle}>{item.name}</Text>

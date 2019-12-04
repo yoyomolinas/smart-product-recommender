@@ -1,11 +1,40 @@
-import React, {Component,useEffect,useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import RecommendationScreen from './screens/RecommendationScreen';
 import Header from './components/Header';
 import MainPage from './screens/MainPage';
 import ProductShot from './screens/ProductShot';
 import ImgPicker from './screens/ImgPicker';
+import Text from "react-native-web/dist/exports/Text";
+
+const  styles = StyleSheet.create({
+    screen: {
+        flex: 1
+    }
+});
+
 export default class App extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoading: true,
+            dataSource: []
+        }
+    }
+    userName = null;
+
+    componentDidMount() {
+        return fetch('products')
+            .then((response) => response.json())
+            .then((responseJson) => {
+                this.setState({
+                    isLoading: false,
+                    dataSource: responseJson
+                })
+            })
+    }
+
 
     // const [userName, setUserName] = useState();
     // const [cameraMode, setCameraMode] = useState();
@@ -13,26 +42,24 @@ export default class App extends Component {
     // const [max_price, setMax] = useState();
     // const [min_price, setMin] = useState();
     //
-    // const mainPageHandler = selectedName => {
-    //     setUserName(selectedName);
-    // };
+     mainPageHandler = selectedName => {
+        this.userName = selectedName;
+    };
     //
-    // const cameraHandler = cameraMode => {
+    //  cameraHandler = cameraMode => {
     //     setCameraMode(cameraMode);
     // };
-    // const maxPriceHandler = maxPrice => {
+    //  maxPriceHandler = maxPrice => {
     //     setMax(maxPrice);
     // };
-    // const minPriceHandler = minPrice => {
+    //  minPriceHandler = minPrice => {
     //     setMin(minPrice);
     // };
-    // const imageDataHandler = imageData => {
+    //  imageDataHandler = imageData => {
     //     setImageData(imageData);
     // };
-    //
-    //
-    // let content = <MainPage onMainPageLoad={mainPageHandler}/>;
-    //
+    content = <MainPage onMainPageLoad={this.mainPageHandler}/>;
+
     // if (userName) {
     //     content = <ProductShot nameOfUser={userName} onCameraPageClick={cameraHandler}/>;
     // }
@@ -44,22 +71,26 @@ export default class App extends Component {
     //
     // if (max_price && min_price && imageData) {
     //     console.log(imageData.substring(0, 10));
+    // }
 
 
-    content = <RecommendationScreen/>;
-
+//productData={this.state.product_data}
+//     content = <RecommendationScreen/>;
 
     render() {
+        // if (this.state.dataSource.length > 0){
+        //     console.log(this.state.dataSource);
         return (
             <View style={styles.screen}>
                 <Header title="Koc University"/>
                 {this.content}
             </View>
         );
+
+
     }
+
+
+
 }
-const styles = StyleSheet.create({
-    screen: {
-        flex: 1
-    }
-});
+
