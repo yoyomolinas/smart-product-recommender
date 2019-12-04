@@ -22,10 +22,30 @@ export default class App extends Component {
             dataSource: []
         }
     }
-    userName = null;
+
+    mainPageHandler = selectedName => {
+        this.userName = selectedName;
+        this.decidePageNavigation();
+    };
+    cameraHandler = cameraMode => {
+        this.cameraMode = cameraMode;
+        this.decidePageNavigation();
+    };
+    maxPriceHandler = maxPrice => {
+        this.max_price = maxPrice;
+        this.decidePageNavigation();
+    };
+    minPriceHandler = minPrice => {
+        this.min_price = minPrice;
+        this.decidePageNavigation();
+    };
+    imageDataHandler = imageData => {
+        this.imageData = imageData;
+        this.decidePageNavigation();
+    };
 
     componentDidMount() {
-        return fetch('products')
+        return fetch('http://0.0.0.0:5000/products')
             .then((response) => response.json())
             .then((responseJson) => {
                 this.setState({
@@ -35,51 +55,36 @@ export default class App extends Component {
             })
     }
 
+    userName = null;
+    cameraMode = null;
+    imageData = null;
+    max_price = null;
+    min_price = null;
 
-    // const [userName, setUserName] = useState();
-    // const [cameraMode, setCameraMode] = useState();
-    // const [imageData, setImageData] = useState();
-    // const [max_price, setMax] = useState();
-    // const [min_price, setMin] = useState();
-    //
-     mainPageHandler = selectedName => {
-        this.userName = selectedName;
-    };
-    //
-    //  cameraHandler = cameraMode => {
-    //     setCameraMode(cameraMode);
-    // };
-    //  maxPriceHandler = maxPrice => {
-    //     setMax(maxPrice);
-    // };
-    //  minPriceHandler = minPrice => {
-    //     setMin(minPrice);
-    // };
-    //  imageDataHandler = imageData => {
-    //     setImageData(imageData);
-    // };
     content = <MainPage onMainPageLoad={this.mainPageHandler}/>;
 
-    // if (userName) {
-    //     content = <ProductShot nameOfUser={userName} onCameraPageClick={cameraHandler}/>;
-    // }
-    //
-    // if (cameraMode) {
-    //     content = <ImgPicker onSetMax={maxPriceHandler} onSetMin={minPriceHandler}
-    //                          onImageData={imageDataHandler}/>
-    // }
-    //
-    // if (max_price && min_price && imageData) {
-    //     console.log(imageData.substring(0, 10));
-    // }
+    decidePageNavigation = () => {
+        if (this.userName) {
+            this.content = <ProductShot nameOfUser={this.userName} onCameraPageClick={this.cameraHandler}/>;
+        }
+
+        if (this.cameraMode) {
+            this.content = <ImgPicker onSetMax={this.maxPriceHandler} onSetMin={this.minPriceHandler}
+                                      onImageData={this.imageDataHandler}/>
+        }
+
+        if (this.max_price && this.min_price && this.imageData) {
+            console.log(this.imageData.substring(0, 10));
+            this.content = <RecommendationScreen/>;
+        }
+    };
 
 
-//productData={this.state.product_data}
-//     content = <RecommendationScreen/>;
 
     render() {
         // if (this.state.dataSource.length > 0){
         //     console.log(this.state.dataSource);
+
         return (
             <View style={styles.screen}>
                 <Header title="Koc University"/>
