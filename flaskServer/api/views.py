@@ -6,6 +6,10 @@ import time
 
 main = Blueprint('main', __name__)
 
+@main.route('/')
+def respond():
+    return 'Done', 201
+
 @main.route('/add_product', methods=['POST'])
 def add_product():
     print("added product")
