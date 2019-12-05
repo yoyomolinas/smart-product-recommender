@@ -10,7 +10,6 @@ main = Blueprint('main', __name__)
 def add_product():
     print("added product")
     product_data = request.get_json()
-    
     #Normally this currenttime field will come from the mobile application
     currentTime = get_time_current_millis()
     new_product = Product(id=currentTime,image=product_data['image'], minPrice=product_data['minPrice'], maxPrice=product_data['maxPrice'])

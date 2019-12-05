@@ -2,7 +2,6 @@ import React from 'react';
 import {Linking, FlatList, View, Text, StyleSheet, Image} from 'react-native';
 import Card from '../components/Card';
 import products from '../demo.json';
-import {match} from 'minimatch';
 
 const RecommendationScreen = props => {
 

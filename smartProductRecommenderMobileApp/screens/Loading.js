@@ -1,6 +1,6 @@
 import React from "react";
 import {Image,Text, StyleSheet, View} from "react-native";
-import MainPage from "./MainPage";
+
 
 
 const Loading = props => {

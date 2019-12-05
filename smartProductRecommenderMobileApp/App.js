@@ -19,34 +19,34 @@ export default function App() {
     const [uniqueId,setId] = useState();
     const [imageSent,setSend] = useState();
 
-    async function componentDidMount(){
-        let result =await fetch('http://35.223.191.99:5000/matching_products')
-            .then((response) => response.json())
-            .then((responseJson) => {
-                     setData(responseJson);
+    // async function componentDidMount(){
+    //     let result =await fetch('http://35.223.191.99:5000/matching_products')
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
+    //                  setData(responseJson);
+    //
+    //         });
+    //     return result;
+    // }
 
-            });
-        return result;
-    }
-
-    async function postSavedImage(){
-        const d = new Date();
-        const id = d.getTime();
-        setId(id);
-        let result =await fetch('http://35.223.191.99:5000/add_product',{
-                method: 'POST',
-                body : {"id": id , "image":imageData, "minPrice":min_price, "maxPrice":max_price}
-            }).then ( () => {
-                console.log("success");
-                setSend(true);
-            }, error => {
-                console.log("getting error");
-                console.log(error);
-            }
-            );
-         return result;
-
-    }
+    // async function postSavedImage(){
+    //     const d = new Date();
+    //     const id = d.getTime();
+    //     setId(id);
+    //     let result =await fetch('http://35.223.191.99:5000/add_product',{
+    //             method: 'POST',
+    //             body : {"id": id , "image":imageData, "minPrice":min_price, "maxPrice":max_price}
+    //         }).then ( () => {
+    //             console.log("success");
+    //             setSend(true);
+    //         }, error => {
+    //             console.log("getting error");
+    //             console.log(error);
+    //         }
+    //         );
+    //      return result;
+    //
+    // }
 
     const mainPageHandler = selectedName => {
         setUserName(selectedName);
@@ -68,7 +68,7 @@ export default function App() {
     let content = <Loading output={"Application Loading"}/>;
     setTimeout(() => {
         setStarted(true);
-        setReco(true);
+
     }, 3000);
     
     if (isStarted) {
@@ -86,10 +86,12 @@ export default function App() {
 
     if (max_price && min_price && imageData && !imageSent) {
         content = <Loading output={"Getting Best Matches"}/>;
-        postSavedImage();
+        // postSavedImage();
         setTimeout(() => {
-            componentDidMount();
+            // componentDidMount();
+            setReco(true);
         }, 5000);
+
 
     }
 // && matching_data TODO: LATER ADD THE LEFT EXPRESSION SO THAT IT WON'T REDİRECT TO RECOMMENDATION PAGE WITHOUT FETCHED DATA
