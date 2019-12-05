@@ -28,7 +28,7 @@ class API:
 
         # load df from features/x.csv
         self.dataset_name = dataset_name
-        self.dataset_path = self.config['dataset'][self.dataset_name]
+        self.dataset_path = DEBUG_FEATURES #self.config['dataset'][self.dataset_name]
         print("Loading data")
         self.df = pd.read_csv(self.dataset_path)
         self.index = np.array(self.df.index.tolist())
