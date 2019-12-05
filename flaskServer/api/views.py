@@ -28,7 +28,7 @@ def products():
     products = []
     for product in product_list:
         products.append({'id':product.id,'image' : product.image, 'minPrice' : product.minPrice, 'maxPrice' : product.maxPrice})
-    return jsonify({'uploaded_products' : products})
+    return jsonify( products)
 
 @main.route('/get_matches')
 def get_matching_products():
@@ -36,7 +36,7 @@ def get_matching_products():
     products = []
     for product in matching_product_list:
         products.append({'id':product.id,'matching_id' : product.matching_id, 'imageUrl' : product.imageUrl, 'productUrl' : product.productUrl})
-    return jsonify({'matching_products' : products})
+    return jsonify(products)
 
 def add_matching_products(fetched_list):
    for matching_product in fetched_list:
