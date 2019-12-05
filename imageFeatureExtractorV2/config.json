@@ -1,4 +1,4 @@
 {
     "model" : {"bigxception_activation": "models/bigx_act.hdf5", "bigxception": "models/bigx.hdf5"},
-    "dataset" : {"boyner" : "data/features/boyner.csv", "boyner" : "data/features/lcwaikiki.csv", "all" : "data/features/all.csv"}
+    "dataset" : {"boyner" : "data/features/boyner.csv", "lcwaikiki" : "data/features/lcwaikiki.csv", "all" : "data/features/all.csv"}
 }

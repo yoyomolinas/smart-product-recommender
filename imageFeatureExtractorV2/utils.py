@@ -54,4 +54,4 @@ def preprocess(img, size, keep_ratio = True):
     Resizes image with original aspect ratio.
     :param img: image as PIL Image
     """
-    return resampling_with_original_ratio(img, size)
+    return np.array(resampling_with_original_ratio(img, size).convert("RGB")).astype(np.float32)

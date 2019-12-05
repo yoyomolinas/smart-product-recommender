@@ -1,15 +1,17 @@
 import json
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 from tensorflow import keras
 from PIL import Image
 import base64
+import utils
 
 CONFIG_PATH = "config.json"
 INPUT_SIZE = (256, 256)
-
+DEBUG_FEATURES = 'temp_features.csv'
 class API:
-    def __init__(self, model_name = "bigxception", dataset_name = 'boyner'):
+    def __init__(self, model_name = "bigxception_activation", dataset_name = 'boyner'):
         print("Loading feature extractor module..")
         self.config = self.load_config()
         
@@ -24,13 +26,21 @@ class API:
 
         # load df from features/x.csv
         self.dataset_name = dataset_name
-        self.dataset_path = self.config['dataset'][self.dataset_name]
+        self.dataset_path = DEBUG_FEATURES # self.config['dataset'][self.dataset_name]
+        print("Loading data")
         self.df = pd.read_csv(self.dataset_path)
-        self.index = self.df.index.tolist()
+        self.index = np.array(self.df.index.tolist())
 
         # store all features as numpy array
-        self.features = self.df['feature'].to_numpy()
-        print("Shape of features:", self.features.shape)
+        self.features = []
+        print("Loading features")
+        for feat_str in tqdm(self.df.feature.tolist()):
+            self.features.append(eval(feat_str))
+        self.features = np.array(self.features)
+
+
+
+        # print("Shape of features:", self.features.shape)
 
         # lambda cosine distance
         self.__cos_dist = lambda vA, vB : np.dot(vA, vB) / (np.sqrt(np.dot(vA,vA)) * np.sqrt(np.dot(vB,vB)))
@@ -49,23 +59,25 @@ class API:
         """
         # preprocess img
         img = self.decode_base_64(base64_img)
-        img = np.array(utils.preprocess(Image.fromarray(img), size = INPUT_SIZE).convert("RGB"))
-        return self.__get_closest_neighbors(img, k = 16, min_price = 0, max_price = 1e6)
+        img = utils.preprocess(Image.fromarray(img), size = INPUT_SIZE)
+        return self._get_closest_neighbors(img, k = 16, min_price = 0, max_price = 1e6)
     
-    def __get_closest_neighbors(img, k = 16, min_price = 0, max_price = 1e6):
+    def _get_closest_neighbors(self, img, k = 16, min_price = 0, max_price = 1e6):
         """
         :param img: numpy array 
         :param k: k number of neighbors
         :param min_price: filter self.df accordingly
         :param max_price: filter self.df accordingly
         """
-        assert type(img) == np.array, "img argument should be a numpy array but is %s"%type(img)
+        assert type(img) == np.ndarray, "img argument should be a numpy array but is %s"%type(img)
 
         # assign df to self.df
         df = self.df
 
         # infer features with model and image
-        categories, features = model.predict(img)
+        img_exp = np.expand_dims(img, axis = 0)
+        img_exp
+        categories, features = self.model.predict(img_exp)
         categories, features = np.squeeze(categories), np.squeeze(features)
         
         # filter category
@@ -75,11 +87,15 @@ class API:
         # filter price
         df = df[(df['productprice'] > min_price) & (df['productprice'] < max_price)]
 
+        # set index and filter features
+        index = np.array(df.index) # set index
+        search_features = self.features[index]
+
         # compute cosine distance between all features in df and img
-        distances = np.array([self.__cos_dist(feat, features) for feat in self.features])
+        distances = np.array([self.__cos_dist(feat, features) for feat in search_features])
         distances_idx = np.argsort(distances)[::-1]
-        index = self.index[distances_idx][:k] # k indices which will be input to data frame
-        df = df.iloc[index, :] # data frame with k elements
+        index = index[distances_idx][:k] # k indices which will be input to data frame
+        df = df.loc[index] # data frame with k elements
 
         # open images from df['local_path']
         # imgs_base_64 = []
@@ -92,7 +108,7 @@ class API:
 
         # df['base_64'] = imgs_base_64
         return df
-
+    
     @staticmethod
     def encode_base_64(np_array):
         """
@@ -107,8 +123,8 @@ class API:
         :param base64_img: image base64 string
         """
         buffer = base64.b64decode(img)
-        np_array = np.frombuffer(buffer, dtype=np.float32)
-        return np_array
+        pil_img = Image.frombuffer(buffer)
+        return pil_img
 
 if __name__ == '__main__':
     pass
