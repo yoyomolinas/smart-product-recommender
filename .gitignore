@@ -5,3 +5,13 @@
 *.hdf5
 *.ipynb_checkpoints/
 *.idea/*
+*.pickle
+deepFashion/data/
+deepFashion/progress/
+deepFashion/deploy/
+deepLcWaikiki/data/
+deepLcWaikiki/deploy/
+deepLcWaikiki/progress/
+imageFeatureExtractorV2/data/
+imageFeatureExtractorV2/deploy/
+imageFeatureExtractorV2/progress/
