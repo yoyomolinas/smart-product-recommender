@@ -11,11 +11,11 @@ def add_product():
     print("added product")
     product_data = request.get_json()
     #Normally this currenttime field will come from the mobile application
-    currentTime = get_time_current_millis()
-    new_product = Product(id=currentTime,image=product_data['image'], minPrice=product_data['minPrice'], maxPrice=product_data['maxPrice'])
+    # currentTime = get_time_current_millis()
+    new_product = Product(id=product_data['id'],image=product_data['image'], minPrice=product_data['minPrice'], maxPrice=product_data['maxPrice'])
     db.session.add(new_product)
     db.session.commit()
-    fetched_list = ffetchClostestImages(product_data,currentTime)
+    fetched_list = fetcher.fetchClostestImages(product_data,currentTime)
     print(fetched_list)
     add_matching_products(fetched_list)
     return 'Done', 201
