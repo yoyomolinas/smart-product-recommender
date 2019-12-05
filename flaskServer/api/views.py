@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from . import db 
 from .models import Product,MatchingProduct
-from .fetcher import fetchClostestImages
+import fetcher
 import time 
 
 main = Blueprint('main', __name__)
@@ -15,7 +15,7 @@ def add_product():
     new_product = Product(id=currentTime,image=product_data['image'], minPrice=product_data['minPrice'], maxPrice=product_data['maxPrice'])
     db.session.add(new_product)
     db.session.commit()
-    fetched_list = fetchClostestImages(product_data,currentTime)
+    fetched_list = ffetchClostestImages(product_data,currentTime)
     print(fetched_list)
     add_matching_products(fetched_list)
     return 'Done', 201
