@@ -53,7 +53,9 @@ const MainPage = props => {
         <Text style={styles.text}>Welcome {selectedName}</Text>
         </View>
         <Button title="Go To Product Page"
-        onPress={() => props.onMainPageLoad(selectedName)}
+        onPress={() => {
+          props.onMainPageLoad(selectedName)
+        }}
         color={Colors.primary}
         />
       </Card>
@@ -105,45 +107,45 @@ const MainPage = props => {
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    padding: 10,
-    alignItems: 'center'
-  },
-  title: {
-    fontSize: 20,
-    marginVertical: 10
-  },
-  productNav: {
-    marginVertical : 20
-  },
-  outputContainer: {
-    margin : 20,
-    width: 300,
-    maxWidth: '80%',
-    alignItems: 'center'
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15
-  },
-  button: {
-    width: 200
-  },
-  input: {
-    width: 50,
-    textAlign: 'center'
-  },
-  image: {
-      width :'50%',
-      height : 150
-  },
-  text: {
-    color: 'black',
-    fontSize: 18
-  }
+    screen: {
+        flex: 1,
+        padding: 10,
+        alignItems: 'center'
+    },
+    title: {
+        fontSize: 20,
+        marginVertical: 10
+    },
+    productNav: {
+        marginVertical : 20
+    },
+    outputContainer: {
+        margin : 20,
+        width: 300,
+        maxWidth: '80%',
+        alignItems: 'center'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between',
+        paddingHorizontal: 15
+    },
+    button: {
+        width: 200
+    },
+    input: {
+        width: 50,
+        textAlign: 'center'
+    },
+    image: {
+        width :'50%',
+        height : 150
+    },
+    text: {
+        color: 'black',
+        fontSize: 18
+    }
 });
 
 export default MainPage;
