@@ -35,7 +35,7 @@ def get_matching_products():
     matching_product_list = MatchingProduct.query.all()
     products = []
     for product in matching_product_list:
-        products.append({'id':product.id,'matching_id' : product.matching_id, 'imageUrl' : product.imageUrl, 'productUrl' : product.productUrl})
+        products.append({'id':product.id, 'name':product.name, 'price':product.price ,'matching_id' : product.matching_id, 'imageUrl' : product.imageUrl, 'productUrl' : product.productUrl})
     return jsonify(products)
 
 def add_matching_products(fetched_list):
