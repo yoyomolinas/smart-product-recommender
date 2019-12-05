@@ -55,7 +55,7 @@ def main(__):
         for i in tqdm(index):
             row = df.iloc[i, :]
             img = Image.open(row['local_path'])
-            img_prep = utils.preprocess(img, size = input_size).convert("RGB")
+            img_prep = utils.preprocess(img, size = input_size)
             img_prep_numpy = np.array(img_prep)
             assert len(img_prep_numpy.shape) == 3, "numpy image not 3 dimensional : %s"%str(img_prep_numpy.shape)
             batch.append(img_prep_numpy)
