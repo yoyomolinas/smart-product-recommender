@@ -1,11 +1,12 @@
-import React, {useEffect,useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Header from './components/Header';
 import MainPage from './screens/MainPage';
 import ProductShot from './screens/ProductShot';
 import ImgPicker from './screens/ImgPicker';
 import RecommendationScreen from "./screens/RecommendationScreen";
-// import customData from './db.json';
+import Loading from "./screens/Loading";
+
 
 export default function App() {
     const [userName, setUserName] = useState();
@@ -13,6 +14,8 @@ export default function App() {
     const [imageData, setImageData] = useState();
     const [max_price, setMax] = useState();
     const [min_price, setMin] = useState();
+    const [showReco, setReco] = useState();
+    const [isStarted, setStarted] = useState();
 
 
     const mainPageHandler = selectedName => {
@@ -32,8 +35,16 @@ export default function App() {
         setImageData(imageData);
     };
 
-    // let content = <MainPage onMainPageLoad={mainPageHandler}/>;
-    let content = <RecommendationScreen/>;
+    let content = <Loading output={"Application Loading"}/>;
+    setTimeout(() => {
+        setStarted(true);
+    }, 3000);
+    if (isStarted) {
+        content = <MainPage onMainPageLoad={mainPageHandler}/>;
+    }
+
+
+
 
     if (userName) {
         content = <ProductShot nameOfUser={userName} onCameraPageClick={cameraHandler}/>;
@@ -41,13 +52,20 @@ export default function App() {
 
     if (cameraMode) {
         content = <ImgPicker onSetMax={maxPriceHandler} onSetMin={minPriceHandler}
-                             onImageData={imageDataHandler}/>
+                             onImageData={imageDataHandler}/>;
     }
 
     if (max_price && min_price && imageData) {
-        console.log(imageData.substring(0, 10));
-        content = <RecommendationScreen/>
+        content = <Loading output={"Getting Best Matches"}/>;
+        setTimeout(() => {
+            setReco(true);
+        }, 3000);
     }
+    if (showReco) {
+        console.log(imageData.substring(0, 10));
+        content = <RecommendationScreen/>;
+    }
+
 
     return (
         <View style={styles.screen}>

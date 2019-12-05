@@ -1,13 +1,16 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Linking,FlatList ,View, Text, StyleSheet, Image} from 'react-native';
 import Card from '../components/Card';
 import products from '../demo.json';
 
 const RecommendationScreen = props => {
-    // const [product_data,setData] = useState([]);
-    // const fetchProducts = () =>{
-    //     setData(companies)
-    // };
+    // const [users_image,setImageData]=useState();
+    //
+    // // const [product_data,setData] = useState([]);
+    // // const fetchProducts = () =>{
+    // //     setData(companies)
+    // // };
+    // setImageData(props.imageChoice);
     return (
         <FlatList
             keyExtractor = {products => products.name}
