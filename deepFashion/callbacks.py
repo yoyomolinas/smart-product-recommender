@@ -4,7 +4,7 @@ from utils import DirectoryTree
 from absl import logging
 
 
-def keep_limited_checkpoints(base, n=8):
+def keep_limited_checkpoints(base, n=16):
     '''
     Callback to maintain only the checkpoints that have minimal validation loss
     Usage:

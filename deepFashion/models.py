@@ -15,7 +15,7 @@ from tensorflow.keras.regularizers import l2
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras import layers
 
-def bigxception(input_shape = (256, 256, 3), act_map_out = True):
+def bigxception(input_shape = (256, 256, 3)):
     regularization = l2(0.01)
     input_tensor = Input(input_shape)
     x = Conv2D(32, (3, 3), strides=(2, 2), use_bias=False)(input_tensor)
@@ -65,11 +65,36 @@ def bigxception(input_shape = (256, 256, 3), act_map_out = True):
     cat_out = Flatten(name = 'categories')(cat_x)
     attr_x = SeparableConv2D(1000, (32, 32), strides = (1, 1), activation = 'sigmoid')(x)
     attr_out = Flatten(name = 'attributes')(attr_x)
-    if act_map_out:
-        model = keras.models.Model(inputs = input_tensor, outputs = [map_out, cat_out, attr_out]) 
-    else:
-        model = keras.models.Model(inputs = input_tensor, outputs = [cat_out, attr_out]) 
+    model = keras.models.Model(inputs = input_tensor, outputs = [cat_out, attr_out]) 
     return model
 
+def pretrained_mobilenetv1(input_shape = (256, 256, 3)):
+    mobil = keras.applications.mobilenet.MobileNet(input_shape=input_shape, include_top=False, weights='imagenet', pooling='avg')
+    x = mobil.outputs[0]
+    cat = keras.layers.Dense(50,name='categories', activation='softmax')(x)
+    attr = keras.layers.Dense(1000,name='attributes', activation='sigmoid')(x)
+    model = keras.models.Model(inputs = mobil.inputs[0], outputs = [cat, attr])
+    return model
+
+def pretrained_vgg16(input_shape = (256, 256, 3)):
+    mobil = keras.applications.vgg16.VGG16(input_shape=input_shape, include_top=False, weights='imagenet', pooling='avg')
+    x = mobil.outputs[0]
+    cat = keras.layers.Dense(50,name='categories', activation='softmax')(x)
+    attr = keras.layers.Dense(1000,name='attributes', activation='sigmoid')(x)
+    model = keras.models.Model(inputs = mobil.inputs[0], outputs = [cat, attr])
+    return model
+
+def pretrained_resnet50(input_shape = (256, 256, 3)):
+    mobil = keras.applications.resnet50.ResNet50(input_shape=input_shape, include_top=False, weights='imagenet', pooling='avg')
+    x = mobil.outputs[0]
+    cat = keras.layers.Dense(50,name='categories', activation='softmax')(x)
+    attr = keras.layers.Dense(1000,name='attributes', activation='sigmoid')(x)
+    model = keras.models.Model(inputs = mobil.inputs[0], outputs = [cat, attr])
+    return model
+
+
 ENUM_MODELS_DICT = {
-    0: bigxception}
+    0: bigxception,
+    1: pretrained_mobilenetv1,
+    2: pretrained_vgg16,
+    3: pretrained_resnet50}

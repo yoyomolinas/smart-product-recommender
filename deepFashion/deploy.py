@@ -14,7 +14,7 @@ from batchgen import BatchGenerator
 import callbacks
 
 """
-This script trains a model on triplets.
+This script deploys a trained model
 Example usage: 
     python deploy.py --ckpt progress/bigx/ckpt/ --save_to deploy/bigx.hdf5 --model_type 0 --input_size 256,256
 """
@@ -24,8 +24,6 @@ DEFAULT_MODEL_TYPE = 0
 
 flags.DEFINE_string('ckpt', None, 'path to hdf5 checkpoint file - should contain weights only')
 flags.DEFINE_string('save_to', None, 'path to save keras hdf5 model file')
-flags.DEFINE_boolean('train_on_activation_map', False, 'Add output for activations and train on these activated regions')
-flags.DEFINE_boolean('deploy_with_activation_map', False, 'Add output for activations in deployed model')
 flags.DEFINE_list('input_size', DEFAULT_IMAGE_SIZE, 'input size in (width, height) format')
 flags.DEFINE_integer('model_type', DEFAULT_MODEL_TYPE, 'integer model type - %s'%str(models.ENUM_MODELS_DICT))
 
@@ -37,20 +35,16 @@ def main(_argv):
     input_shape = (int(FLAGS.input_size[1]), int(FLAGS.input_size[0]), 3)
     
     # Prepare network
-    model = models.ENUM_MODELS_DICT[FLAGS.model_type](input_shape=input_shape, act_map_out = FLAGS.train_on_activation_map)
+    model = models.ENUM_MODELS_DICT[FLAGS.model_type](input_shape=input_shape)
     logging.info("Loading weights from %s"%FLAGS.ckpt)
     model.load_weights(FLAGS.ckpt)
     
     # Concatenate layers 
     attrs_layer = model.get_layer("attributes").output
     cats_layer = model.get_layer("categories").output
-    # feat_layer = keras.layers.concatenate(inputs = [cats_layer, attrs_layer], axis = -1, name = 'features')
     outputs = [cats_layer, attrs_layer]
-    if FLAGS.deploy_with_activation_map:
-        activ_layer = model.get_layer("tf_op_layer_Mean").output
-        outputs.append(activ_layer)
     model = keras.models.Model(inputs = model.inputs, outputs = outputs)
-    model.compile(optimizer = 'adam', loss = 'mse')
+    model.compile(optimizer = 'adam', loss = 'mse', metrics = [keras.metrics.Recall(), keras.metrics.Precision()])
     
     model.summary()
     logging.info("Saved model to %s"%FLAGS.save_to)

@@ -6,11 +6,11 @@ import time
 from PIL import Image
 import cv2
 import utils
+from imgaug import augmenters as iaa
 
-# batch generator
 class BatchGenerator(keras.utils.Sequence):
     """
-    This batch generator generates batches of images, labels, attributes, and activation maps. 
+    This batch generator generates batches of augmented images, labels, and attributes.
     """
     def __init__(self,
                 image_paths,
@@ -23,9 +23,8 @@ class BatchGenerator(keras.utils.Sequence):
                 batch_size = 64,
                 shuffle = True, 
                 image_size = (128, 128),
-                return_activation_map = True, 
-                activation_map_size = (24, 24),
-                activation_map_mode = 'box',
+                jitter = False,
+                crop = False,
                 mode = 'train'):
         """
         :param image_size: image_size in (width, height) format
@@ -33,14 +32,13 @@ class BatchGenerator(keras.utils.Sequence):
         assert mode in ['test', 'train', 'val']
         assert image_size[0] == image_size[1], \
             "Expected square image size please correct image_size argument accordingly"
-        assert activation_map_size[0] == activation_map_size[1], \
-            "Expected square activation map size please correct activation_map_size argument accordingly"
         self.mode = mode
         self.batch_size = batch_size
         self.shuffle = shuffle
         self.image_size = image_size
         self.eval_status = np.array(eval_status)
         self.index = np.arange(0, len(image_paths))[self.eval_status == self.mode]
+        np.random.seed(1)
         np.random.shuffle(self.index)
         self.image_paths = image_paths
         self.bboxes = bboxes
@@ -48,10 +46,9 @@ class BatchGenerator(keras.utils.Sequence):
         self.attributes = attributes
         self.num_categories = num_categories
         self.num_attributes = num_attributes
-        self.return_activation_map = return_activation_map
-        self.activation_map_size = activation_map_size
-        self.activation_map_mode=activation_map_mode
-        self.morph_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
+        self.aug_pipe = self.get_aug_pipeline(p = 0.5)  
+        self.jitter = jitter
+        self.crop = crop
         
     def __len__(self):
         """
@@ -81,69 +78,71 @@ class BatchGenerator(keras.utils.Sequence):
             # Keep batch size stable when length of images is not a multiple of batch size.
             l_bound = r_bound - self.batch_size
         return l_bound, r_bound
-    
-    def get_attention_map(self, bbox, img_size, map_mode = 'gaussian'):
+
+    def preprocess(self, image, bbox, size):
         """
-        Return attention map of a given image. 
-        This is either a 2d gaussian distribution centered at the center of the bounding box, 
-        or a smoothed activation map of the bbox.
-        :param bbox: bounding box in x1, x2, y1, y2 format where x refers to rows and y refers to columns
-        :param size: size of activation map
-        :param map_mode: one of ['box', 'smooth_box', 'gaussian']
+        :param image: PIL image
+        :param bbox: bounding box in (x1, y1, x2, y2) format
+        :return image: numpy array
         """
-        assert map_mode in ['box', 'smooth_box', 'gaussian']
-        x1, x2, y1, y2 = bbox
-        act_arr = np.zeros((img_size[1], img_size[0]))
-        if map_mode in ['smooth_box', 'box']:                
-            act_arr[y1:y2, x1:x2] = 1
-            if map_mode == 'smooth_box':
-                act_arr = cv2.GaussianBlur(act_arr, (11, 11), 2, 2)
-                act_arr = cv2.morphologyEx(act_arr, cv2.MORPH_CLOSE, self.morph_kernel)
-        elif map_mode == 'gaussian':
-            h, w = y2 - y1, x2 - x1
-            x = np.expand_dims(np.sin(np.linspace(0, np.pi, h)), axis = -1)
-            y = np.expand_dims(np.sin(np.linspace(0, np.pi, w)), axis = 0)
-            act_arr[y1:y2, x1:x2] = x * y
-        ret_img = Image.fromarray(act_arr)
-        ret_img = utils.resampling_with_original_ratio(ret_img, self.activation_map_size)
-        ret_arr = np.array(ret_img)
-        return ret_arr
-    
+        temp_image = image
+        if self.crop:
+            temp_image = temp_image.crop(bbox)
+        temp_image = utils.resampling_with_original_ratio(temp_image, self.image_size)
+        temp_image = np.array(temp_image)
+        if self.jitter:
+            temp_image = self.aug_pipe.augment_image(temp_image)
+        return temp_image
+
+    def get_aug_pipeline(self, p = 0.2):
+        # Helper Lambda
+
+        sometimes = lambda aug: iaa.Sometimes(p, aug)
+
+        aug_pipe = iaa.Sequential(
+            [
+                iaa.SomeOf(
+                    (1, 2),
+                    [
+                        # sometimes(iaa.Fliplr(1.)),  # horizontally flip 50% of all images
+                        sometimes(iaa.Crop(percent=(0, 0.15))),  # crop images by 0-10% of their height/width
+                        sometimes(iaa.Affine(translate_percent={"x": (-0.15, 0.15), "y": (-0.15, 0.15)}))
+                    ],
+                    random_order=True
+                ),
+                iaa.OneOf(
+                    [
+                        sometimes(iaa.Multiply((0.5, 0.5), per_channel=0.5)),
+                        iaa.GaussianBlur((0, 3.0)),  # blur images with a sigma between 0 and 3.0
+                        iaa.AdditiveGaussianNoise(loc=0, scale=(0.0, 0.04 * 255), per_channel=0.5),
+                        
+                    ]
+                )
+            ],
+            random_order=True
+        )
+
+        return aug_pipe  
+
     def __getitem__(self, i):
         """
         Abstract function from Sequence class - called every iteration in model.fit_generator function.
         :param i: batch id
         :return X, [Y_map, Y_cat, Y_attr]
         """
-        X, Y_map, Y_cat, Y_attr = [], [], [], []
+        X, Y_cat, Y_attr = [], [], []
         l_bound, r_bound = self.__get_bounds__(i)
         for j in range(l_bound, r_bound):
             idx = self.index[j]
             img = Image.open(self.image_paths[idx])
-            if self.return_activation_map:
-                act_map = self.get_attention_map(self.bboxes[idx], 
-                                                    img_size=img.size,
-                                                    map_mode = self.activation_map_mode)
-            if self.image_size:
-                img = utils.resampling_with_original_ratio(img, self.image_size)
-            img_arr = np.array(img)
+            bbox = (self.bboxes[idx][0], self.bboxes[idx][2], self.bboxes[idx][1], self.bboxes[idx][3]) # (x1, y1, x2, y2)
+            img_arr = self.preprocess(img, bbox, size= self.image_size)
             cat_vec = np.zeros(self.num_categories)
             cat_vec[self.categories[idx]] = 1
             attr_vec = self.attributes[idx]
             X.append(img_arr)
             Y_cat.append(cat_vec)
             Y_attr.append(attr_vec)
-            if self.return_activation_map:
-                Y_map.append(act_map)
         X = np.array(X)
-        Y_out = []
-        if self.return_activation_map:
-            Y_map = np.array(Y_map)
-            Y_out.append(Y_map)
-        Y_cat = np.array(Y_cat)
-        Y_attr = np.array(Y_attr)
-        Y_out.append(Y_cat)
-        Y_out.append(Y_attr)
-        
+        Y_out = [np.array(Y_cat), np.array(Y_attr)]
         return X, Y_out
-    
