@@ -34,9 +34,6 @@ const ImgPicker = props => {
             base64: true,
             quality: 0.5
         });
-        console.log(testImage.height);
-        console.log(testImage.width);
-        console.log(testImage.size);
         setPickedImage(testImage.uri);
         setImageData(testImage.base64);
     };

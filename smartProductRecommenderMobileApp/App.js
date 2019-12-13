@@ -57,7 +57,9 @@ export default function App() {
         setUserName(selectedName);
     };
     const newSearchHandler = () => {
-        console.log("Do that shit again");
+        setReco(false);
+        setMin(null);
+        setMax(null);
     };
 
     const cameraHandler = cameraMode => {
@@ -73,6 +75,16 @@ export default function App() {
         setTimeout(() => {
             componentDidMount();
         }, 4000);        
+    };
+    const showImagePicker = () => {
+        content = <ImgPicker onSetMax={maxPriceHandler} onSetMin={minPriceHandler} onImageData={imageDataHandler} onTransaction={imageTransactionHandler}/>;
+    };
+    const showRecoScreen = () => {
+        content = <Loading output={"Getting Best Matches"}/>;
+        setTimeout(() => {
+            setReco(true);
+        }, 5000);
+
     };
     const imageDataHandler = (imageData,minPrice,maxPrice) => {
         postSavedImage(imageData,minPrice,maxPrice);
@@ -94,16 +106,11 @@ export default function App() {
     }
 
     if (cameraMode) {
-        content = <ImgPicker onSetMax={maxPriceHandler} onSetMin={minPriceHandler} onImageData={imageDataHandler} onTransaction={imageTransactionHandler}/>;
+       showImagePicker();
     }
 
     if (max_price && min_price && !imageSent) {
-        content = <Loading output={"Getting Best Matches"}/>;
-        setTimeout(() => {
-            setReco(true);
-        }, 5000);
-
-
+       showRecoScreen();
     }
     if (showReco ) {
         content = <RecommendationScreen productData={matching_data} productId={uniqueId} useDemo={true}/>;
