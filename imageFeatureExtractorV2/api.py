@@ -13,14 +13,16 @@ INPUT_SIZE = (256, 256)
 DEBUG_FEATURES = 'temp_features.csv'
 
 class API:
-    def __init__(self, model_name = "bigxception_activation", dataset_name = 'boyner'):
+    def __init__(self, model_name = "pretrained-mobilenet-v2-1-100", dataset_name = 'boyner', debug =False):
         print("Loading feature extractor module..")
         self.config = self.load_config()
         
         # make assertions
         assert dataset_name in self.config['dataset'].keys(), "%s should be in config.json file"%dataset_name
         assert model_name in self.config['model'].keys(), "%s should be in config.json file"%model_name
-
+        
+        self.debug = debug
+        
         # load model
         self.model_name = model_name
         self.model_path = self.config['model'][self.model_name]
@@ -28,7 +30,11 @@ class API:
 
         # load df from features/x.csv
         self.dataset_name = dataset_name
-        self.dataset_path = DEBUG_FEATURES #self.config['dataset'][self.dataset_name]
+        if self.debug:
+            self.dataset_path = DEBUG_FEATURES
+        else:
+            self.dataset_path = self.config['dataset'][self.dataset_name]
+            
         print("Loading data")
         self.df = pd.read_csv(self.dataset_path)
         self.index = np.array(self.df.index.tolist())
@@ -84,6 +90,7 @@ class API:
         
         # filter category
         category = int(np.argmax(categories))
+        # Comment out if do not want to filter category
         df = df[df['category'] == category]
 
         # filter price
@@ -95,8 +102,17 @@ class API:
 
         # compute cosine distance between all features in df and img
         distances = np.array([self.__cos_dist(feat, features) for feat in search_features])
-        distances_idx = np.argsort(distances)[::-1]
-        index = index[distances_idx][:k] # k indices which will be input to data frame
+        # filter 0 distances
+        non_zero_index = distances != 0
+        distances = distances[non_zero_index]
+        index = index[non_zero_index]
+        # filter uniques - due to duplicates in db
+        _, unique_index = np.unique(distances, return_index = True)
+        distances = distances[unique_index]
+        index = index[unique_index]
+        # sort distances
+        sort_index = np.argsort(distances)[::-1]
+        index = index[sort_index][:k] # k indices which will be input to data frame
         df = df.loc[index] # data frame with k elements
 
         # open images from df['local_path']

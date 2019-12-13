@@ -12,7 +12,7 @@ import utils
 """
 This script extracts features for given dataset.
 Example usage: 
-    python extract.py --dataset boyner --model models/bigx.hdf5 --batch_size 1000 --input_size 256,256
+    python extract.py --dataset boyner --model models/mobil-v2-pre-1-100.hdf5 --batch_size 1000 --input_size 256,256
 """
 
 DEFAULT_BATCH_SIZE = 1000
@@ -32,7 +32,6 @@ SAVE_TO_PATH_DICT = {
 flags.DEFINE_integer('batch_size', DEFAULT_BATCH_SIZE, 'batch size should not be too large as to exceed RAM capacity, dont use if in doubt')
 flags.DEFINE_string('dataset', None, 'should be one of %s'%str(list(DATASET_PATH_DICT.keys())))
 flags.DEFINE_string('model', None, "path to model")
-# flags.DEFINE_string('save_to', None, "put any path here, recommendded is : data/features/x.csv")
 flags.DEFINE_list('input_size', DEFAULT_IMAGE_SIZE, 'input size in (width, height) format')
 
 flags.mark_flag_as_required('dataset')

@@ -27,6 +27,7 @@ flags.DEFINE_list('input_size', DEFAULT_IMAGE_SIZE, 'input size in (width, heigh
 flags.DEFINE_integer('num_query', 144, 'number of images to query for evaluating retreival - default to 144')
 flags.DEFINE_integer('num_augments', 20, 'number of augmentations to apply to each query image - default to 20')
 flags.DEFINE_integer('batch_idx', 100, 'batch id')
+flags.DEFINE_boolean('eval_std', False, 'Eval on test set all images with common metrics')
 
 def main(_):
     input_size = (int(FLAGS.input_size[0]) , int(FLAGS.input_size[1])) # (width, height)
@@ -41,6 +42,7 @@ def main(_):
     # load model
     logging.info("Loading model")
     model = keras.models.load_model(FLAGS.model_path)
+    # model.summary()
 
     # create batchgen
     no_jitter_std_args_dict = dict(
@@ -49,7 +51,7 @@ def main(_):
         categories=data['cat_labels'],
         attributes=data['attr_labels'],
         eval_status=data['eval_status'],
-        batch_size=32,
+        batch_size=16,
         image_size=input_size,
         shuffle = True,
         jitter = False,
@@ -125,12 +127,12 @@ def main(_):
         #         axes[row, col].imshow(img)
         #         axes[row, col].set_xticks([])
         #         axes[row, col].set_yticks([])
+    if FLAGS.eval_std:
+        # report evaluation metrics on entire test set
+        logging.info("Evaluating model on test set : %i images "%int(len(std_gen) * 32))
+        _, _, _, cat_recall, cat_precision, attr_recall, attr_precision = model.evaluate_generator(std_gen, verbose = 1)
 
-    # report evaluation metrics on entire test set
-    logging.info("Evaluating model on test set : %i images "%int(len(std_gen) * 32))
-    _, _, _, cat_recall, cat_precision, attr_recall, attr_precision = model.evaluate_generator(std_gen, verbose = 1)
-
-    logging.info("----------------Results----------------")
+    logging.info("-----------Retreival Results------------")
     logging.info("Model path : %s"%FLAGS.model_path)
     logging.info("Clothes cropped : %s"%str(FLAGS.crop))
     logging.info("Model input size : %s"%str(input_size))
@@ -138,18 +140,18 @@ def main(_):
     logging.info("Number of augmentations applied to each query image : %i"%FLAGS.num_augments)
     logging.info("Batch idx utilized : %i"%FLAGS.batch_idx)
     logging.info("\n")
-    logging.info("-----------Evaluation Results-----------")
-    logging.info("Categories Recall: %.3f"%cat_recall)
-    logging.info("Categories Precision: %.3f"%cat_precision)
-    logging.info("Attributes Recall: %.3f"%attr_recall)
-    logging.info("Attributes Precision: %.3f"%attr_precision)
-    logging.info("----------------------------------------")
-    logging.info("\n")
-    logging.info("-----------Retreival Results------------")
     logging.info("Distance metric: %s"%"Cosine")
-    logging.indo("Average retreival accuracy : %.4f"%np.mean(results))
+    logging.info("Average retreival accuracy : %.4f"%np.mean(results))
     logging.info("----------------------------------------")
     logging.info("\n")
+    if FLAGS.eval_std:
+        logging.info("-----------Evaluation Results-----------")
+        logging.info("Categories Recall: %.3f"%cat_recall)
+        logging.info("Categories Precision: %.3f"%cat_precision)
+        logging.info("Attributes Recall: %.3f"%attr_recall)
+        logging.info("Attributes Precision: %.3f"%attr_precision)
+        logging.info("----------------------------------------")
+        logging.info("\n")
 
 if __name__ == '__main__':
     try:

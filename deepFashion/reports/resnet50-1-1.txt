@@ -1,0 +1,7 @@
+Train Configuration :
+    Model: Resnet50
+    NumParams: 25m
+    Crop : False
+    Loss Weights:
+        Categories: 1
+        Attributes : 1

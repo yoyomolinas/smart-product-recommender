@@ -1,0 +1,43 @@
+Train Configuration :
+    Model: Pretrained Mobilenet V2
+    NumParams: 4.3m
+    Crop : False
+    Loss Weights:
+        Categories: 1
+        Attributes : 1
+
+I1213 11:07:33.858559 140228205729536 eval.py:148] -----------Evaluation Results-----------
+I1213 11:07:33.858605 140228205729536 eval.py:149] Categories Recall: 0.598
+I1213 11:07:33.858634 140228205729536 eval.py:150] Categories Precision: 0.792
+I1213 11:07:33.858682 140228205729536 eval.py:151] Attributes Recall: 0.045
+I1213 11:07:33.858713 140228205729536 eval.py:152] Attributes Precision: 0.603
+I1213 11:07:33.858742 140228205729536 eval.py:153] ----------------------------------------
+
+I1213 11:07:33.857668 140228205729536 eval.py:135] -----------Retreival Results 1------------
+I1213 11:07:33.857850 140228205729536 eval.py:136] Model path : deploy/mobil-v2-pre-1-1.hdf5
+I1213 11:07:33.857920 140228205729536 eval.py:137] Clothes cropped : False
+I1213 11:07:33.857967 140228205729536 eval.py:138] Model input size : (256, 256)
+I1213 11:07:33.858011 140228205729536 eval.py:139] Number of images queried : 144
+I1213 11:07:33.858215 140228205729536 eval.py:140] Number of augmentations applied to each query image : 20
+I1213 11:07:33.858259 140228205729536 eval.py:141] Batch idx utilized : 100
+I1213 11:07:33.858307 140228205729536 eval.py:142] 
+
+I1213 11:07:33.858341 140228205729536 eval.py:143] Distance metric: Cosine
+I1213 11:07:33.858452 140228205729536 eval.py:144] Average retreival accuracy : 0.8958
+I1213 11:07:33.858493 140228205729536 eval.py:145] ----------------------------------------
+I1213 11:07:33.858525 140228205729536 eval.py:146]
+
+I1213 11:13:19.810831 140585863599872 eval.py:135] -----------Retreival Results 2------------
+I1213 11:13:19.811014 140585863599872 eval.py:136] Model path : deploy/mobil-v2-pre-1-1.hdf5
+I1213 11:13:19.811069 140585863599872 eval.py:137] Clothes cropped : False
+I1213 11:13:19.811111 140585863599872 eval.py:138] Model input size : (256, 256)
+I1213 11:13:19.811150 140585863599872 eval.py:139] Number of images queried : 256
+I1213 11:13:19.811188 140585863599872 eval.py:140] Number of augmentations applied to each query image : 50
+I1213 11:13:19.811224 140585863599872 eval.py:141] Batch idx utilized : 9
+I1213 11:13:19.811257 140585863599872 eval.py:142] 
+
+I1213 11:13:19.811290 140585863599872 eval.py:143] Distance metric: Cosine
+I1213 11:13:19.811545 140585863599872 eval.py:144] Average retreival accuracy : 0.8501
+I1213 11:13:19.811601 140585863599872 eval.py:145] ----------------------------------------
+I1213 11:13:19.811635 140585863599872 eval.py:146] 
+
