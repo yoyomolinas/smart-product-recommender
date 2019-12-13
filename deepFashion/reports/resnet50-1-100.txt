@@ -5,3 +5,26 @@ Train Configuration :
     Loss Weights:
         Categories: 1
         Attributes : 100
+        
+
+I1213 11:30:48.813574 140431312979712 eval.py:148] -----------Evaluation Results-----------
+I1213 11:30:48.813604 140431312979712 eval.py:149] Categories Recall: 0.613
+I1213 11:30:48.813633 140431312979712 eval.py:150] Categories Precision: 0.770
+I1213 11:30:48.813662 140431312979712 eval.py:151] Attributes Recall: 0.091
+I1213 11:30:48.813693 140431312979712 eval.py:152] Attributes Precision: 0.590
+I1213 11:30:48.813722 140431312979712 eval.py:153] ----------------------------------------
+I1213 11:30:48.813750 140431312979712 eval.py:154] 
+
+ 11:30:48.812899 140431312979712 eval.py:135] -----------Retreival Results------------
+I1213 11:30:48.813088 140431312979712 eval.py:136] Model path : deploy/resnet50-1-100.hdf5
+I1213 11:30:48.813143 140431312979712 eval.py:137] Clothes cropped : False
+I1213 11:30:48.813186 140431312979712 eval.py:138] Model input size : (256, 256)
+I1213 11:30:48.813250 140431312979712 eval.py:139] Number of images queried : 144
+I1213 11:30:48.813287 140431312979712 eval.py:140] Number of augmentations applied to each query image : 20
+I1213 11:30:48.813319 140431312979712 eval.py:141] Batch idx utilized : 100
+I1213 11:30:48.813349 140431312979712 eval.py:142] 
+
+I1213 11:30:48.813378 140431312979712 eval.py:143] Distance metric: Cosine
+I1213 11:30:48.813476 140431312979712 eval.py:144] Average retreival accuracy : 0.9417
+I1213 11:30:48.813513 140431312979712 eval.py:145] ----------------------------------------
+I1213 11:30:48.813542 140431312979712 eval.py:146] 
