@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from . import db 
 from .models import Product,MatchingProduct
-import fetcher
+from .fetcher import fetchClostestImages
 import time 
 
 main = Blueprint('main', __name__)
@@ -10,14 +10,13 @@ main = Blueprint('main', __name__)
 def add_product():
     print("added product")
     product_data = request.get_json()
-    #Normally this currenttime field will come from the mobile application
-    # currentTime = get_time_current_millis()
-    new_product = Product(id=product_data['id'],image=product_data['image'], minPrice=product_data['minPrice'], maxPrice=product_data['maxPrice'])
+    matching_id=product_data['id']
+    base64_image=product_data['image'].rstrip()
+    new_product = Product(id=matching_id,image=base64_image, minPrice=product_data['minPrice'], maxPrice=product_data['maxPrice'])
     db.session.add(new_product)
     db.session.commit()
-    fetched_list = fetcher.fetchClostestImages(product_data,currentTime)
-    print(fetched_list)
-    add_matching_products(fetched_list)
+    fetched_list = fetchClostestImages(product_data,matching_id)
+    # add_matching_products(fetched_list)
     return 'Done', 201
 
 @main.route('/products')
@@ -41,16 +40,6 @@ def add_matching_products(fetched_list):
    for matching_product in fetched_list:
        db.session.add(matching_product)
        db.session.commit()
-
-# @main.route('/add_matching_product', methods=['POST'])
-# def add_matching_product():
-#     matching_product_data = request.get_json()
-#     new_matching_product = MatchingProduct(matching_id=matching_product_data['matching_id'],imageUrl=matching_product_data['imageUrl'], productUrl=matching_product_data['productUrl'])
-#     db.session.add(new_matching_product)
-#     db.session.commit()
-#     # fetched_list = fetchClostestImages(product_data)
-#     # add_matching_products(fetched_list)
-#     return 'Done', 201  
     
 def get_time_current_millis():
     return round(time.time()*10000)

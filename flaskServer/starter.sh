@@ -1,5 +1,5 @@
 #!/bin/bash
-pipenv run
+#pipenv run
 export FLASK_APP=api
-export FLASK_DEBUG=1
+export FLASK_DEBUG=0
 flask run --host=0.0.0.0
