@@ -6,9 +6,9 @@ from .models import MatchingProduct
 # print("Featex module path", featex_module_path)
 
 # sys.path.append(featex_module_path)
-# from imageFeatureExtractorV2.api import API
+from .imageFeatureExtractorV2.api import API
 
-# FEATEX_API = API()
+FEATEX_API = API()
 
 def fetchClostestImages(imageData, matchingid):
     """
