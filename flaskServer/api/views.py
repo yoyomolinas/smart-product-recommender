@@ -8,7 +8,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/add_product', methods=['POST'])
 def add_product():
-    print("added product")
+    print("Added product")
     product_data = request.get_json()
     matching_id=product_data['id']
     base64_image=product_data['image'].rstrip()
@@ -16,12 +16,12 @@ def add_product():
     db.session.add(new_product)
     db.session.commit()
     fetched_list = fetchClostestImages(product_data,matching_id)
-    # add_matching_products(fetched_list)
+    add_matching_products(fetched_list)
     return 'Done', 201
 
 @main.route('/products')
 def products():
-    print("showing products")
+    # print("showing products")
     product_list = Product.query.all()
     products = []
     for product in product_list:
@@ -33,7 +33,14 @@ def get_matching_products():
     matching_product_list = MatchingProduct.query.all()
     products = []
     for product in matching_product_list:
-        products.append({'id':product.id, 'name':product.name, 'price':product.price ,'matching_id' : product.matching_id, 'imageUrl' : product.imageUrl, 'productUrl' : product.productUrl})
+        products.append({
+            'id':product.id, 
+            'rank' : product.rank,
+            'name':product.name,
+            'price':product.price ,
+            'matching_id' : product.matching_id,
+            'imageUrl' : product.imageUrl, 
+            'productUrl' : product.productUrl})
     return jsonify(products)
 
 def add_matching_products(fetched_list):

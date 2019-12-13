@@ -1,20 +1,23 @@
 import json
+from os.path import join, abspath
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from tensorflow import keras
 from PIL import Image
 import base64
-import utils
+import io
+from . import utils
 
-CONFIG_PATH = "config.json"
+BASE = abspath(join(__file__, '../'))
+CONFIG_PATH = join(BASE, "config.json")
 INPUT_SIZE = (256, 256)
 
-DEBUG_FEATURES = 'temp_features.csv'
+DEBUG_FEATURES = join(BASE, 'temp_features.csv')
 
 class API:
     def __init__(self, model_name = "pretrained-mobilenet-v2-1-100", dataset_name = 'boyner', debug =False):
-        print("Loading feature extractor module..")
+        print("Loading feature extractor module")
         self.config = self.load_config()
         
         # make assertions
@@ -25,7 +28,7 @@ class API:
         
         # load model
         self.model_name = model_name
-        self.model_path = self.config['model'][self.model_name]
+        self.model_path = join(BASE, self.config['model'][self.model_name])
         self.model = keras.models.load_model(self.model_path)
 
         # load df from features/x.csv
@@ -33,8 +36,8 @@ class API:
         if self.debug:
             self.dataset_path = DEBUG_FEATURES
         else:
-            self.dataset_path = self.config['dataset'][self.dataset_name]
-            
+            self.dataset_path = join(BASE, self.config['dataset'][self.dataset_name])
+
         print("Loading data")
         self.df = pd.read_csv(self.dataset_path)
         self.index = np.array(self.df.index.tolist())
@@ -42,6 +45,7 @@ class API:
         # store all features as numpy array
         self.features = []
         print("Loading features")
+        self.features = np.load()
         for feat_str in tqdm(self.df.feature.tolist()):
             self.features.append(eval(feat_str))
         self.features = np.array(self.features)
@@ -58,7 +62,7 @@ class API:
             config_dict = json.load(f)
         return config_dict
 
-    def get_closest_neighbors(base64_img, k = 16, min_price = 0, max_price = 1e6):
+    def get_closest_neighbors(self, base64_img, k = 16, min_price = 0, max_price = 1e6):
         """
         :param base64_img: image base64  
         :param k: k number of neighbors
@@ -67,8 +71,9 @@ class API:
         """
         # preprocess img
         img = self.decode_base_64(base64_img)
-        img = utils.preprocess(Image.fromarray(img), size = INPUT_SIZE)
-        return self._get_closest_neighbors(img, k = 16, min_price = 0, max_price = 1e6)
+        print("Image size:", img.size)
+        np_img = utils.preprocess(img, size = INPUT_SIZE)
+        return self._get_closest_neighbors(np_img, k = 16, min_price = 0, max_price = 1e6)
     
     def _get_closest_neighbors(self, img, k = 16, min_price = 0, max_price = 1e6):
         """
@@ -84,7 +89,6 @@ class API:
 
         # infer features with model and image
         img_exp = np.expand_dims(img, axis = 0)
-        img_exp
         categories, features = self.model.predict(img_exp)
         categories, features = np.squeeze(categories), np.squeeze(features)
         
@@ -133,15 +137,16 @@ class API:
         :param np_array: image numpy array
         """
         base64_img = base64.b64encode(np_array)
-        return base64_img
+        return base64_img   
     
     @staticmethod
     def decode_base_64(base64_img):
         """
         :param base64_img: image base64 string
+        :return PIL.Image: returns pil image
         """
-        buffer = base64.b64decode(img)
-        pil_img = Image.frombuffer(buffer)
+        buffer = base64.b64decode(base64_img)
+        pil_img = Image.open(io.BytesIO(buffer))
         return pil_img
 
 if __name__ == '__main__':

@@ -11,6 +11,7 @@ class MatchingProduct(db.Model):
     name = db.Column(db.String(100))
     price = db.Column(db.Integer)
     matching_id = db.Column(db.Integer)
+    rank = db.Column(db.Integer)
     imageUrl = db.Column(db.String(100)) 
     productUrl = db.Column(db.String(100))
 

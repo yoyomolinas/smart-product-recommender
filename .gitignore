@@ -12,6 +12,4 @@ deepFashion/deploy/
 deepLcWaikiki/data/
 deepLcWaikiki/deploy/
 deepLcWaikiki/progress/
-imageFeatureExtractorV2/data/
-imageFeatureExtractorV2/deploy/
-imageFeatureExtractorV2/progress/
+flaskServer/api/imageFeatureExtractorV2/data/

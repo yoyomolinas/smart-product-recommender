@@ -8,32 +8,32 @@ from .models import MatchingProduct
 # sys.path.append(featex_module_path)
 from .imageFeatureExtractorV2.api import API
 
-FEATEX_API = API()
+FEATEX_API = API(model_name = "pretrained-mobilenet-v2-1-100", debug = False)
 
-def fetchClostestImages(imageData, matchingid):
+def fetchClostestImages(imageData, matchingid, k = 16):
     """
     This imageData object will be in the form of :
     id, imageBase64String, minPrice, maxPrice  
     """
-    yoels_image = imageData['image'].rstrip()
+    # rstrip image to remove \n in base 64 string
+    image_base64 = imageData['image'].rstrip()
     minimum_price = imageData['minPrice']
     maximum_price = imageData['maxPrice']
     #TODO: do whatever you want to do here with the image
     returned_products = []
-    
-    #TODO We must fill the above array with 10 closest images. You have three inputs from imageData object:
-    # imageBase64Strings
-    # minPrice
-    # maxPrice
-    print("Image data is the following:")
-    print(matchingid)
-    print("I am getting Yoel's images (This is my bro Yoel's part) ")    
+    print("Fetching closest images for %i"%matchingid)
+    query_df = FEATEX_API.get_closest_neighbors(image_base64, k=k, min_price=minimum_price, max_price=maximum_price)
 
-    for i in range(10):
-    
-        new_product = MatchingProduct(matching_id=matchingid,name="dummy_name",price=50, imageUrl='www.dummy.com/'+str(i), productUrl='www.dummy.com/'+str(i))
+    #Encode query results in MatchingProduct format 
+    for i, (_, row) in enumerate(query_df.iterrows()):
+        new_product = MatchingProduct(
+            matching_id=matchingid,
+            rank = i,
+            name=row['productname'],
+            price=row['productprice'], 
+            imageUrl=row['productimageurl'],
+            productUrl=row['producturl'])
         returned_products.append(new_product)
     
-    return returned_products 
-
-    
+    print("Number of returned products:",len(returned_products))
+    return returned_products
