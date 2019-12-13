@@ -6,50 +6,58 @@ import ProductShot from './screens/ProductShot';
 import ImgPicker from './screens/ImgPicker';
 import RecommendationScreen from "./screens/RecommendationScreen";
 import Loading from "./screens/Loading";
+import NewSearch from './components/NewSearch';
 
 export default function App() {
     const [userName, setUserName] = useState();
     const [cameraMode, setCameraMode] = useState();
-    const [imageData, setImageData] = useState();
     const [max_price, setMax] = useState();
     const [min_price, setMin] = useState();
-    const [showReco, setReco] = useState();
+    const [showReco, setReco] = useState(0);
     const [isStarted, setStarted] = useState();
     const [matching_data,setData] = useState([]);
     const [uniqueId,setId] = useState();
     const [imageSent,setSend] = useState();
 
-    // async function componentDidMount(){
-    //     let result =await fetch('http://35.223.191.99:5000/matching_products')
-    //         .then((response) => response.json())
-    //         .then((responseJson) => {
-    //                  setData(responseJson);
-    //
-    //         });
-    //     return result;
-    // }
+    async function componentDidMount(){
+        let result =await fetch('http://35.223.191.99:5000/products')
+            .then((response) => response.json())
+            .then((responseJson) => {
+                     setData(responseJson);
+    
+            });
+        return result;
+    }
 
-    // async function postSavedImage(){
-    //     const d = new Date();
-    //     const id = d.getTime();
-    //     setId(id);
-    //     let result =await fetch('http://35.223.191.99:5000/add_product',{
-    //             method: 'POST',
-    //             body : {"id": id , "image":imageData, "minPrice":min_price, "maxPrice":max_price}
-    //         }).then ( () => {
-    //             console.log("success");
-    //             setSend(true);
-    //         }, error => {
-    //             console.log("getting error");
-    //             console.log(error);
-    //         }
-    //         );
-    //      return result;
-    //
-    // }
+    async function postSavedImage(image_data,minPrice,maxPrice){
+        const min = minPrice;
+        const max = maxPrice;
+        const image = image_data;
+        const d = new Date();
+        const id = d.getTime();
+        setId(id);
+        let result =await fetch('http://35.223.191.99:5000/add_product',{
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                     'Content-Type': 'application/json',
+                         },
+                body : JSON.stringify({"id": id , "image":image, "minPrice":min, "maxPrice":max
+            }),
+        }).then(success => {
+            console.log("Success");
+            setSend(true);
+          }, error => {
+            console.log(error);
+          });
+         return result;    
+    }
 
     const mainPageHandler = selectedName => {
         setUserName(selectedName);
+    };
+    const newSearchHandler = () => {
+        console.log("Do that shit again");
     };
 
     const cameraHandler = cameraMode => {
@@ -61,16 +69,22 @@ export default function App() {
     const minPriceHandler = minPrice => {
         setMin(minPrice);
     };
-    const imageDataHandler = imageData => {
-        setImageData(imageData);
+    const imageTransactionHandler = () => {
+        setTimeout(() => {
+            componentDidMount();
+        }, 4000);        
+    };
+    const imageDataHandler = (imageData,minPrice,maxPrice) => {
+        postSavedImage(imageData,minPrice,maxPrice);
+        setTimeout(() => {
+            imageTransactionHandler();
+        }, 1000);
     };
 
-    let content = <Loading output={"Application Loading"}/>;
     setTimeout(() => {
         setStarted(true);
-
     }, 3000);
-    
+    let content = <Loading output={"Application Loading"}/>;
     if (isStarted) {
         content = <MainPage onMainPageLoad={mainPageHandler}/>;
     }
@@ -80,32 +94,35 @@ export default function App() {
     }
 
     if (cameraMode) {
-        content = <ImgPicker onSetMax={maxPriceHandler} onSetMin={minPriceHandler}
-                             onImageData={imageDataHandler}/>;
+        content = <ImgPicker onSetMax={maxPriceHandler} onSetMin={minPriceHandler} onImageData={imageDataHandler} onTransaction={imageTransactionHandler}/>;
     }
 
-    if (max_price && min_price && imageData && !imageSent) {
+    if (max_price && min_price && !imageSent) {
         content = <Loading output={"Getting Best Matches"}/>;
-        // postSavedImage();
         setTimeout(() => {
-            // componentDidMount();
             setReco(true);
         }, 5000);
 
 
     }
-// && matching_data TODO: LATER ADD THE LEFT EXPRESSION SO THAT IT WON'T REDİRECT TO RECOMMENDATION PAGE WITHOUT FETCHED DATA
-    if (showReco) {//change useDemo to false when everything is set!!
-        content = <RecommendationScreen imageData={matching_data} productId={uniqueId} useDemo={true}/>;
-    }
+    if (showReco ) {
+        content = <RecommendationScreen productData={matching_data} productId={uniqueId} useDemo={true}/>;
+        return (
+            <View style={styles.screen}>
+                <Header />
+                {content}
+                <NewSearch onNewSearch={newSearchHandler} />
+            </View>
+        );
+    }else{
+        return (
+            <View style={styles.screen}>
+                <Header/>
+                {content}
+            </View>
+        );  
 
-
-    return (
-        <View style={styles.screen}>
-            <Header title="Koc University"/>
-            {content}
-        </View>
-    );
+        }   
 }
 
 

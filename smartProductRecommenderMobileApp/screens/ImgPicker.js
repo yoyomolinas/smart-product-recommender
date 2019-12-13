@@ -34,6 +34,9 @@ const ImgPicker = props => {
             base64: true,
             quality: 0.5
         });
+        console.log(testImage.height);
+        console.log(testImage.width);
+        console.log(testImage.size);
         setPickedImage(testImage.uri);
         setImageData(testImage.base64);
     };
@@ -56,7 +59,9 @@ const ImgPicker = props => {
             if (priceRangeHandler()) {
                 props.onSetMax(maxPrice);
                 props.onSetMin(minPrice);
-                props.onImageData(imageData);
+                props.onImageData(imageData,minPrice,maxPrice);
+
+
             }
         }
     };
@@ -108,7 +113,7 @@ const ImgPicker = props => {
                 />
                 <Slider
                     style={{width: 300}}
-                    step={50}
+                    step={20}
                     minimumValue={100}
                     maximumValue={1000}
                     value={maxPrice}
@@ -123,7 +128,7 @@ const ImgPicker = props => {
                 </Text>
             </View>
         </View>
-    ); 
+    );
 };
 
 const styles = StyleSheet.create({

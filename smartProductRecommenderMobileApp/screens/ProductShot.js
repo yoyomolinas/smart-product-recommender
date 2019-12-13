@@ -4,7 +4,6 @@ import {View, Text, StyleSheet, Button, Image} from 'react-native';
 import Card from '../components/Card';
 import Colors from '../constants/colors';
 const ProductShot = props => {
-    // const [cameraMode, setCameraMode] = useState(false);
     return (
         <View style={styles.screen}>
             <Image source={require('../assets/smartProductReco.png')}
@@ -16,12 +15,12 @@ const ProductShot = props => {
             </Card>
 
             <Card>
-                <Text style={styles.text}>Take a Picture of Your Favourite Product!</Text>
+                <Text style={styles.text}>Picture the product in the next page!</Text>
             </Card>
             <View style={styles.button}>
                 <Card style={styles.buttonContainer}>
                     <Button
-                        title="Go to the Camera"
+                        title="Go To Capture Page"
                         onPress={() => {
                             props.onCameraPageClick(true);
                         }}
