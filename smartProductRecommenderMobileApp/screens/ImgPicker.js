@@ -48,6 +48,10 @@ const ImgPicker = props => {
         setImageData(testImage.base64);
     };
 
+    const resetImageHandler = async () => {
+      setPickedImage[null];
+    };
+
     const priceRangeHandler = () => {
         if (maxPrice < minPrice) {
             Alert.alert(
@@ -90,16 +94,35 @@ const ImgPicker = props => {
                 }
             </View>
             {!pickedImage ? (
-                <Button
+                <View>
+                <Button style={{marginVertical : 10}}
                     title="Take Image"
                     color={colors.primary}
-                    onPress={uploadImageHandler}
-                />) : (
-                <Button style={{width: 200}}
+                    onPress={takeImageHandler}
+                />
+                <Button style={{marginVertical : 10}}
+                title="Upload Image"
+                color={colors.primary}
+                onPress={uploadImageHandler}
+                />
+                </View>
+                ) : (
+                <View>
+                <Button style={{width: 200,
+                          marginVertical : 10
+                        }}
                         title="Return Best Matches"
                         color={colors.primary}
                         onPress={saveImageHandler}
                 />
+                <Button style={{width: 200,
+                      marginVertical : 10
+                    }}
+                        title="Reset Image"
+                        color={colors.primary}
+                        onPress={resetImageHandler}
+                />
+                 </View>
             )
             }
             <View style={styles.sliderContainer}>
@@ -112,8 +135,8 @@ const ImgPicker = props => {
 
                 <Slider
                     style={{width: 300}}
-                    step={20}
-                    minimumValue={20}
+                    step={10}
+                    minimumValue={0}
                     maximumValue={200}
                     value={minPrice}
                     onValueChange={val => setMinPrice(val)}
@@ -121,8 +144,8 @@ const ImgPicker = props => {
                 />
                 <Slider
                     style={{width: 300}}
-                    step={20}
-                    minimumValue={100}
+                    step={10}
+                    minimumValue={50}
                     maximumValue={1000}
                     value={maxPrice}
                     onValueChange={val => setMaxPrice(val)}
