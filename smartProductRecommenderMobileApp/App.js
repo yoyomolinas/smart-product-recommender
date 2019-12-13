@@ -60,6 +60,7 @@ export default function App() {
         setReco(false);
         setMin(null);
         setMax(null);
+        showImagePicker();
     };
 
     const cameraHandler = cameraMode => {
@@ -87,9 +88,9 @@ export default function App() {
 
     };
     const imageDataHandler = (imageData,minPrice,maxPrice) => {
-        postSavedImage(imageData,minPrice,maxPrice);
+        // postSavedImage(imageData,minPrice,maxPrice);
         setTimeout(() => {
-            imageTransactionHandler();
+            // imageTransactionHandler();
         }, 1000);
     };
 

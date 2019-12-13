@@ -37,6 +37,17 @@ const ImgPicker = props => {
         setPickedImage(testImage.uri);
         setImageData(testImage.base64);
     };
+    const uploadImageHandler = async () => {
+        const testImage = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+            base64: true,
+            quality: 0.5
+        });
+        setPickedImage(testImage.uri);
+        setImageData(testImage.base64);
+    };
+
     const priceRangeHandler = () => {
         if (maxPrice < minPrice) {
             Alert.alert(
@@ -82,7 +93,7 @@ const ImgPicker = props => {
                 <Button
                     title="Take Image"
                     color={colors.primary}
-                    onPress={takeImageHandler}
+                    onPress={uploadImageHandler}
                 />) : (
                 <Button style={{width: 200}}
                         title="Return Best Matches"
