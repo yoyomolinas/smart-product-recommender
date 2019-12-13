@@ -37,6 +37,21 @@ const ImgPicker = props => {
         setPickedImage(testImage.uri);
         setImageData(testImage.base64);
     };
+    const uploadImageHandler = async () => {
+        const testImage = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+            base64: true,
+            quality: 0.5
+        });
+        setPickedImage(testImage.uri);
+        setImageData(testImage.base64);
+    };
+
+    const resetImageHandler = async () => {
+      setPickedImage[null];
+    };
+
     const priceRangeHandler = () => {
         if (maxPrice < minPrice) {
             Alert.alert(
@@ -56,7 +71,9 @@ const ImgPicker = props => {
             if (priceRangeHandler()) {
                 props.onSetMax(maxPrice);
                 props.onSetMin(minPrice);
-                props.onImageData(imageData);
+                props.onImageData(imageData,minPrice,maxPrice);
+
+
             }
         }
     };
@@ -77,16 +94,35 @@ const ImgPicker = props => {
                 }
             </View>
             {!pickedImage ? (
-                <Button
+                <View>
+                <Button style={{marginVertical : 10}}
                     title="Take Image"
                     color={colors.primary}
                     onPress={takeImageHandler}
-                />) : (
-                <Button style={{width: 200}}
+                />
+                <Button style={{marginVertical : 10}}
+                title="Upload Image"
+                color={colors.primary}
+                onPress={uploadImageHandler}
+                />
+                </View>
+                ) : (
+                <View>
+                <Button style={{width: 200,
+                          marginVertical : 10
+                        }}
                         title="Return Best Matches"
                         color={colors.primary}
                         onPress={saveImageHandler}
                 />
+                <Button style={{width: 200,
+                      marginVertical : 10
+                    }}
+                        title="Reset Image"
+                        color={colors.primary}
+                        onPress={resetImageHandler}
+                />
+                 </View>
             )
             }
             <View style={styles.sliderContainer}>
@@ -99,8 +135,8 @@ const ImgPicker = props => {
 
                 <Slider
                     style={{width: 300}}
-                    step={20}
-                    minimumValue={20}
+                    step={10}
+                    minimumValue={0}
                     maximumValue={200}
                     value={minPrice}
                     onValueChange={val => setMinPrice(val)}
@@ -108,8 +144,8 @@ const ImgPicker = props => {
                 />
                 <Slider
                     style={{width: 300}}
-                    step={50}
-                    minimumValue={100}
+                    step={10}
+                    minimumValue={50}
                     maximumValue={1000}
                     value={maxPrice}
                     onValueChange={val => setMaxPrice(val)}
@@ -123,7 +159,7 @@ const ImgPicker = props => {
                 </Text>
             </View>
         </View>
-    ); 
+    );
 };
 
 const styles = StyleSheet.create({
