@@ -16,12 +16,12 @@ const ProductShot = props => {
             </Card>
 
             <Card>
-                <Text style={styles.text}>Take a Picture of Your Favourite Product!</Text>
+                <Text style={styles.text}>Upload the Picture of Your Favourite Product!</Text>
             </Card>
             <View style={styles.button}>
                 <Card style={styles.buttonContainer}>
                     <Button
-                        title="Go to the Camera"
+                        title="Capture Image"
                         onPress={() => {
                             props.onCameraPageClick(true);
                         }}
