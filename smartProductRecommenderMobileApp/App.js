@@ -15,7 +15,7 @@ export default function App() {
     const [isStarted, setStarted] = useState();
     const [isLoading, setLoading] = useState();
     const [matching_data, setData] = useState([]);
-    // const [uniqueId, setId] = useState();
+    
 
 
      function componentDidMount(uniqId) {
@@ -63,13 +63,7 @@ export default function App() {
 
     const imageTransactionHandler = (id) => {
       setTimeout(() => {
-      componentDidMount(id)
-            // .then(success => {
-            //     console.log("Success");
-            //
-            // }, error => {
-            //     console.log(error);
-            // });
+      componentDidMount(id);
         }, 2000);
 
     };
@@ -83,11 +77,6 @@ export default function App() {
       let uniqueId;
          setLoading(true);
          uniqueId = postSavedImage(imageData,minPrice,maxPrice);
-        // .then(success => {
-        //     console.log("Success");
-        // }, error => {
-        //     console.log(error);
-        // });
         imageTransactionHandler(uniqueId);
         setTimeout(() => {
             setLoading(false);
