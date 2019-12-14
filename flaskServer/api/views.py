@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render-templete
 from . import db 
 from .models import Product,MatchingProduct
 from .fetcher import fetchClostestImages
@@ -37,6 +37,10 @@ def get_matching_products():
     for product in matching_product_list:
         products.append({'id':product.id,'matching_id' : product.matching_id, 'imageUrl' : product.imageUrl, 'productUrl' : product.productUrl})
     return jsonify(products)
+
+@main.route('/admin_benchmark')
+def show_admin_page():
+    render-templete('/adminPage/admin.html');
 
 def add_matching_products(fetched_list):
    for matching_product in fetched_list:
