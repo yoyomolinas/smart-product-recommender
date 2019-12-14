@@ -32,13 +32,13 @@ const RecommendationScreen = props => {
     } else {
         return (
             <FlatList
-                keyExtractor={matching_data => matching_data.id}
-                data={props.imageData}
+                keyExtractor={matching_data => matching_data.id.toString()}
+                data={props.productData}
                 renderItem={({item}) => {
-                    if (item.matching_id == props.productId) {
+
                         return (<View>
                                 <Card style={styles.outputContainer}>
-                                    {/*<Text style={styles.textStyle}>{item.name}</Text>*/}
+                                    {<Text style={styles.textStyle}>{item.name}</Text>}
                                     <Image source={{uri: item.imageUrl}}
                                            style={styles.image}
                                            resizeMode='cover'
@@ -52,7 +52,7 @@ const RecommendationScreen = props => {
                             </View>
                         )
                     }
-                }}
+                }
             />
         );
     }
