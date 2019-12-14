@@ -2,7 +2,7 @@
 *.png
 *.csv
 *.zip
-*.hdf5
+# *.hdf5
 *.ipynb_checkpoints/
 *.idea/*
 *.pickle
