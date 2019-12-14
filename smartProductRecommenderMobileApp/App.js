@@ -11,46 +11,42 @@ import NewSearch from './components/NewSearch';
 export default function App() {
     const [userName, setUserName] = useState();
     const [cameraMode, setCameraMode] = useState();
-    const [max_price, setMax] = useState();
-    const [min_price, setMin] = useState();
-    const [showReco, setReco] = useState(0);
+    const [showReco, setReco] = useState(false);
     const [isStarted, setStarted] = useState();
-    const [matching_data,setData] = useState([]);
-    const [uniqueId,setId] = useState();
-    const [imageSent,setSend] = useState();
+    const [isLoading, setLoading] = useState();
+    const [matching_data, setData] = useState([]);
+    // const [uniqueId, setId] = useState();
 
-    async function componentDidMount(){
-        let result =await fetch('http://35.223.191.99:5000/products')
+
+     function componentDidMount(uniqId) {
+
+        let result =  fetch('http://35.223.191.99:5000/get_matches?id='+uniqId)
             .then((response) => response.json())
             .then((responseJson) => {
-                     setData(responseJson);
-    
+                setData(responseJson);
             });
+
         return result;
     }
 
-    async function postSavedImage(image_data,minPrice,maxPrice){
+     function postSavedImage(image_data, minPrice, maxPrice) {
         const min = minPrice;
         const max = maxPrice;
         const image = image_data;
         const d = new Date();
         const id = d.getTime();
-        setId(id);
-        let result =await fetch('http://35.223.191.99:5000/add_product',{
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                     'Content-Type': 'application/json',
-                         },
-                body : JSON.stringify({"id": id , "image":image, "minPrice":min, "maxPrice":max
+
+        let result =  fetch('http://35.223.191.99:5000/add_product', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "id": id, "image": image, "minPrice": min, "maxPrice": max
             }),
-        }).then(success => {
-            console.log("Success");
-            setSend(true);
-          }, error => {
-            console.log(error);
-          });
-         return result;    
+        });
+        return id;
     }
 
     const mainPageHandler = selectedName => {
@@ -58,45 +54,51 @@ export default function App() {
     };
     const newSearchHandler = () => {
         setReco(false);
-        setMin(null);
-        setMax(null);
         showImagePicker();
     };
 
     const cameraHandler = cameraMode => {
         setCameraMode(cameraMode);
     };
-    const maxPriceHandler = maxPrice => {
-        setMax(maxPrice);
-    };
-    const minPriceHandler = minPrice => {
-        setMin(minPrice);
-    };
-    const imageTransactionHandler = () => {
-        setTimeout(() => {
-            componentDidMount();
-        }, 4000);        
-    };
-    const showImagePicker = () => {
-        content = <ImgPicker onSetMax={maxPriceHandler} onSetMin={minPriceHandler} onImageData={imageDataHandler} onTransaction={imageTransactionHandler}/>;
-    };
-    const showRecoScreen = () => {
-        content = <Loading output={"Getting Best Matches"}/>;
-        setTimeout(() => {
-            setReco(true);
-        }, 5000);
+
+    const imageTransactionHandler = (id) => {
+      setTimeout(() => {
+      componentDidMount(id)
+            // .then(success => {
+            //     console.log("Success");
+            //
+            // }, error => {
+            //     console.log(error);
+            // });
+        }, 2000);
 
     };
-    const imageDataHandler = (imageData,minPrice,maxPrice) => {
-        // postSavedImage(imageData,minPrice,maxPrice);
+    const showImagePicker = () => {
+        content = <ImgPicker onImageData={imageDataHandler} />;
+    };
+    const showRecoScreen = () => {
+        content = <RecommendationScreen productData={matching_data} useDemo={false}/>;
+    };
+    const imageDataHandler = (imageData, minPrice, maxPrice) => {
+      let uniqueId;
+         setLoading(true);
+         uniqueId = postSavedImage(imageData,minPrice,maxPrice);
+        // .then(success => {
+        //     console.log("Success");
+        // }, error => {
+        //     console.log(error);
+        // });
+        imageTransactionHandler(uniqueId);
         setTimeout(() => {
-            // imageTransactionHandler();
-        }, 1000);
+            setLoading(false);
+            setReco(true);
+        }, 4000);
     };
 
     setTimeout(() => {
         setStarted(true);
     }, 3000);
+
     let content = <Loading output={"Application Loading"}/>;
     if (isStarted) {
         content = <MainPage onMainPageLoad={mainPageHandler}/>;
@@ -105,32 +107,31 @@ export default function App() {
     if (userName) {
         content = <ProductShot nameOfUser={userName} onCameraPageClick={cameraHandler}/>;
     }
-
     if (cameraMode) {
-       showImagePicker();
+        showImagePicker();
+    }
+    if (isLoading) {
+        content = <Loading output={"Getting Best Matches"}/>;
     }
 
-    if (max_price && min_price && !imageSent) {
-       showRecoScreen();
-    }
-    if (showReco ) {
-        content = <RecommendationScreen productData={matching_data} productId={uniqueId} useDemo={true}/>;
+    if (showReco) {
+        showRecoScreen();
         return (
             <View style={styles.screen}>
-                <Header />
+                <Header/>
                 {content}
-                <NewSearch onNewSearch={newSearchHandler} />
+                <NewSearch onNewSearch={newSearchHandler}/>
             </View>
         );
-    }else{
+    } else {
         return (
             <View style={styles.screen}>
                 <Header/>
                 {content}
             </View>
-        );  
+        );
 
-        }   
+    }
 }
 
 

@@ -31,7 +31,8 @@ def products():
 
 @main.route('/get_matches')
 def get_matching_products():
-    matching_product_list = MatchingProduct.query.all()
+    id = request.args.get('id')
+    matching_product_list = MatchingProduct.query.filter(MatchingProduct.matching_id == id)
     products = []
     for product in matching_product_list:
         products.append({'id':product.id, 'name':product.name, 'price':product.price ,'matching_id' : product.matching_id, 'imageUrl' : product.imageUrl, 'productUrl' : product.productUrl})
