@@ -2,6 +2,7 @@
 *.png
 *.csv
 *.zip
+*.pyc
 # *.hdf5
 *.ipynb_checkpoints/
 *.idea/*
