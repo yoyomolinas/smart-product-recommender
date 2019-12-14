@@ -15,7 +15,7 @@ def add_product():
     new_product = Product(id=matching_id,image=base64_image, minPrice=product_data['minPrice'], maxPrice=product_data['maxPrice'])
     db.session.add(new_product)
     db.session.commit()
-    fetched_list = fetchClostestImages(product_data,matching_id)
+    fetched_list = fetchClostestImages(product_data,matching_id, k = 54)
     add_matching_products(fetched_list)
     return 'Done', 201
 
@@ -30,11 +30,12 @@ def products():
 
 @main.route('/get_matches')
 def get_matching_products():
-    matching_product_list = MatchingProduct.query.all()
+    id = request.args.get('id')
+    matching_product_list = MatchingProduct.query.filter(MatchingProduct.matching_id == id)
     products = []
     for product in matching_product_list:
         products.append({
-            'id':product.id, 
+            'id':product.id,
             'rank' : product.rank,
             'name':product.name,
             'price':product.price ,

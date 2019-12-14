@@ -1,5 +1,6 @@
 import json
-from os.path import join, abspath
+from os.path import join, abspath, exists
+import os
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -13,18 +14,14 @@ BASE = abspath(join(__file__, '../'))
 CONFIG_PATH = join(BASE, "config.json")
 INPUT_SIZE = (256, 256)
 
-DEBUG_FEATURES = join(BASE, 'temp_features.csv')
-
 class API:
-    def __init__(self, model_name = "pretrained-mobilenet-v2-1-100", dataset_name = 'boyner', debug =False):
+    def __init__(self, model_name = "pretrained-mobilenet-v2-1-100", dataset_name = 'boyner'):
         print("Loading feature extractor module")
         self.config = self.load_config()
         
         # make assertions
         assert dataset_name in self.config['dataset'].keys(), "%s should be in config.json file"%dataset_name
         assert model_name in self.config['model'].keys(), "%s should be in config.json file"%model_name
-        
-        self.debug = debug
         
         # load model
         self.model_name = model_name
@@ -33,29 +30,30 @@ class API:
 
         # load df from features/x.csv
         self.dataset_name = dataset_name
-        if self.debug:
-            self.dataset_path = DEBUG_FEATURES
-        else:
-            self.dataset_path = join(BASE, self.config['dataset'][self.dataset_name])
+        self.dataset_path = join(BASE, self.config['dataset'][self.dataset_name])
 
         print("Loading data")
         self.df = pd.read_csv(self.dataset_path)
         self.index = np.array(self.df.index.tolist())
+        
+        self.category_index = self.config['category_index']
 
         # store all features as numpy array
-        self.features = []
         print("Loading features")
-        self.features = np.load()
-        for feat_str in tqdm(self.df.feature.tolist()):
-            self.features.append(eval(feat_str))
-        self.features = np.array(self.features)
-
-
-
-        # print("Shape of features:", self.features.shape)
-
+        self.features = []
+        self.load_features()
+        
         # lambda cosine distance
         self.__cos_dist = lambda vA, vB : np.dot(vA, vB) / (np.sqrt(np.dot(vA,vA)) * np.sqrt(np.dot(vB,vB)))
+
+    def load_features(self):
+        fast_load_features_path = join(BASE, self.config['features'][self.dataset_name])
+        if exists(fast_load_features_path):
+            self.features = np.load(fast_load_features_path)
+        else:
+            for feat_str in tqdm(self.df.feature.tolist()):
+                self.features.append(eval(feat_str))
+            self.features = np.array(self.features)
 
     def load_config(self):
         with open(CONFIG_PATH, 'r') as f:
@@ -73,7 +71,7 @@ class API:
         img = self.decode_base_64(base64_img)
         print("Image size:", img.size)
         np_img = utils.preprocess(img, size = INPUT_SIZE)
-        return self._get_closest_neighbors(np_img, k = 16, min_price = 0, max_price = 1e6)
+        return self._get_closest_neighbors(np_img, k = k, min_price = 0, max_price = 1e6)
     
     def _get_closest_neighbors(self, img, k = 16, min_price = 0, max_price = 1e6):
         """
@@ -94,6 +92,7 @@ class API:
         
         # filter category
         category = int(np.argmax(categories))
+        print("Category:", self.category_index[str(category)])
         # Comment out if do not want to filter category
         df = df[df['category'] == category]
 
@@ -118,17 +117,6 @@ class API:
         sort_index = np.argsort(distances)[::-1]
         index = index[sort_index][:k] # k indices which will be input to data frame
         df = df.loc[index] # data frame with k elements
-
-        # open images from df['local_path']
-        # imgs_base_64 = []
-        # for i, row in df.iterrows():
-        #     neighbor_img_path = row['local_path']
-        #     neighbor_img = Image.open(neighbor_img_path)
-        #     neighbor_img = np.array(neighbor_img)
-        #     neighbor_img_base_64 = self.encode_base_64(neighbor_img)
-        #     imgs_base_64.append(neighbor_img_base_64)
-
-        # df['base_64'] = imgs_base_64
         return df
     
     @staticmethod

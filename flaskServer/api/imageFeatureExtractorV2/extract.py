@@ -28,6 +28,11 @@ SAVE_TO_PATH_DICT = {
     'lcwaikiki':'data/features/lcwaikiki.csv',
     'all': 'data/features/all.csv'}
 
+SAVE_FEATURES_PATH_DICT = {
+    'boyner':'data/features/boyner_features.npy',
+    'lcwaikiki':'data/features/lcwaikiki_features.npy',
+    'all': 'data/features/all_features.npy'}
+
 
 flags.DEFINE_integer('batch_size', DEFAULT_BATCH_SIZE, 'batch size should not be too large as to exceed RAM capacity, dont use if in doubt')
 flags.DEFINE_string('dataset', None, 'should be one of %s'%str(list(DATASET_PATH_DICT.keys())))
@@ -84,6 +89,9 @@ def main(__):
         df_list.append(pd.DataFrame(ret_dict))
         df_final = pd.concat(df_list)
         df_final.to_csv(SAVE_TO_PATH_DICT[FLAGS.dataset])
+        features = np.array(ret_dict['feature'])
+        np.save(SAVE_FEATURES_PATH_DICT[FLAGS.dataset], features)
+        # TODO save debug csv and features
         logging.info("Saved table with predicted categories and extracted features into %s"%SAVE_TO_PATH_DICT[FLAGS.dataset])
 
 if __name__ == '__main__':

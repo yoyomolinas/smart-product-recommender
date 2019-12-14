@@ -1,14 +1,7 @@
 from .models import MatchingProduct
-# from os import path
-# import sys
-
-# featex_module_path = path.abspath(path.join(__file__, '../../../'))
-# print("Featex module path", featex_module_path)
-
-# sys.path.append(featex_module_path)
 from .imageFeatureExtractorV2.api import API
 
-FEATEX_API = API(model_name = "pretrained-mobilenet-v2-1-100", debug = False)
+FEATEX_API = API(dataset_name='boyner')
 
 def fetchClostestImages(imageData, matchingid, k = 16):
     """
