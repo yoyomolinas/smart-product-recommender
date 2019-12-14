@@ -40,7 +40,7 @@ def get_matching_products():
 
 @main.route('/admin_benchmark')
 def show_admin_page():
-    render-templete('/adminPage/admin.html');
+    render-templete('/adminPage/admin.html')
 
 def add_matching_products(fetched_list):
    for matching_product in fetched_list:
