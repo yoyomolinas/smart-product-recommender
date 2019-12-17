@@ -3,8 +3,6 @@ from . import db
 from .models import Product,MatchingProduct
 from .fetcher import fetchClostestImages
 import time
-from os.path import join, abspath
-
 
 main = Blueprint('main', __name__)
 
@@ -48,13 +46,10 @@ def get_matching_products():
 
 @main.route('/benchmarks')
 def show_admin():
-    basepath = abspath(join(__file__, '..'))
-    return render_template('./admin.html')
+    return render_template('admin.html')
 
 def add_matching_products(fetched_list):
    for matching_product in fetched_list:
        db.session.add(matching_product)
        db.session.commit()
 
-def get_time_current_millis():
-    return round(time.time()*10000)
