@@ -1,8 +1,10 @@
-from flask import Blueprint, jsonify, request, render-templete
+from flask import Blueprint, jsonify, request, render_template
 from . import db
 from .models import Product,MatchingProduct
 from .fetcher import fetchClostestImages
 import time
+from os.path import join, abspath
+
 
 main = Blueprint('main', __name__)
 
@@ -46,7 +48,8 @@ def get_matching_products():
 
 @main.route('/benchmarks')
 def show_admin():
-    render-templete('adminPage/admin.html');
+    basepath = abspath(join(__file__, '..'))
+    return render_template('./admin.html')
 
 def add_matching_products(fetched_list):
    for matching_product in fetched_list:
