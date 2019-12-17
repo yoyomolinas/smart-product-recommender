@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request, render-templete
-from . import db 
+from . import db
 from .models import Product,MatchingProduct
 from .fetcher import fetchClostestImages
-import time 
+import time
 
 main = Blueprint('main', __name__)
 
@@ -40,10 +40,11 @@ def get_matching_products():
             'name':product.name,
             'price':product.price ,
             'matching_id' : product.matching_id,
-            'imageUrl' : product.imageUrl, 
+            'imageUrl' : product.imageUrl,
             'productUrl' : product.productUrl})
     return jsonify(products)
-@main.route('/admin_benchmark')
+
+@main.route('/benchmarks')
 def show_admin():
     render-templete('adminPage/admin.html');
 
@@ -51,6 +52,6 @@ def add_matching_products(fetched_list):
    for matching_product in fetched_list:
        db.session.add(matching_product)
        db.session.commit()
-    
+
 def get_time_current_millis():
     return round(time.time()*10000)
