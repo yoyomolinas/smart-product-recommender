@@ -81,12 +81,12 @@ export default function App() {
         setTimeout(() => {
             setLoading(false);
             setReco(true);
-        }, 6000);
+        }, 7100);
     };
 
     setTimeout(() => {
         setStarted(true);
-    }, 3000);
+    }, 2000);
 
     let content = <Loading output={"Application Loading"}/>;
     if (isStarted) {
