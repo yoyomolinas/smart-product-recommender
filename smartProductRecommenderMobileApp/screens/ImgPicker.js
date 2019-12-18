@@ -32,7 +32,7 @@ const ImgPicker = props => {
             allowsEditing: true,
             aspect: [3, 4],
             base64: true,
-            quality: 0.5
+            quality: 0.1
         });
         setPickedImage(testImage.uri);
         setImageData(testImage.base64);
