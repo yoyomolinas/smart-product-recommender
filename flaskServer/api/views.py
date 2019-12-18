@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, render_template
 from . import db
 from .models import Product,MatchingProduct
-#from .fetcher import fetchClostestImages
+from .fetcher import fetchClostestImages
 import time
 
 main = Blueprint('main', __name__)
