@@ -1,89 +1,85 @@
-
-
-
-
 /*//////////////////////////////////////////////////////////////////
 [ FONT ]*/
 
 @font-face {
   font-family: Raleway-Regular;
-  src: url('../fonts/raleway/Raleway-Regular.ttf');
+  src: url('../fonts/raleway/Raleway-Regular.ttf'); 
 }
 
 @font-face {
   font-family: Raleway-Medium;
-  src: url('../fonts/raleway/Raleway-Medium.ttf');
+  src: url('../fonts/raleway/Raleway-Medium.ttf'); 
 }
 
 @font-face {
   font-family: Raleway-SemiBold;
-  src: url('../fonts/raleway/Raleway-SemiBold.ttf');
+  src: url('../fonts/raleway/Raleway-SemiBold.ttf'); 
 }
 
 @font-face {
   font-family: Raleway-Bold;
-  src: url('../fonts/raleway/Raleway-Bold.ttf');
+  src: url('../fonts/raleway/Raleway-Bold.ttf'); 
 }
 
 /*//////////////////////////////////////////////////////////////////
 [ RESTYLE TAG ]*/
 
 * {
-	margin: 0px;
-	padding: 0px;
-	box-sizing: border-box;
+  margin: 0px; 
+  padding: 0px; 
+  box-sizing: border-box;
 }
 
 body, html {
-	height: 100%;
-	font-family: Raleway-Regular, sans-serif;
+  height: 100%;
+  font-family: Raleway-Regular, sans-serif;
 }
 
 /*---------------------------------------------*/
 a {
-	font-family: Raleway-Regular;
-	font-size: 14px;
-	line-height: 1.7;
-	color: #666666;
-	margin: 0px;
-	transition: all 0.4s;
-	-webkit-transition: all 0.4s;
+  font-family: Raleway-Regular;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #666666;
+  margin: 0px;
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
   -o-transition: all 0.4s;
   -moz-transition: all 0.4s;
 }
 
 a:focus {
-	outline: none !important;
+  outline: none !important;
 }
 
 a:hover {
-	text-decoration: none;
+  text-decoration: none;
   color: #57b846;
 }
 
 /*---------------------------------------------*/
 h1,h2,h3,h4,h5,h6 {
-	margin: 0px;
+  margin: 0px;
 }
 
 p {
-	font-family: Raleway-Regular;
-	font-size: 14px;
-	line-height: 1.7;
-	color: #666666;
-	margin: 0px;
+  font-family: Raleway-Regular;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #666666;
+  margin: 0px;
 }
 
 ul, li {
-	margin: 0px;
-	list-style-type: none;
+  margin: 0px;
+  list-style-type: none;
 }
 
 
 /*---------------------------------------------*/
 input {
-	outline: none;
-	border: none;
+  outline: none;
+  border: none;
 }
 
 textarea {
@@ -122,17 +118,17 @@ label {
 
 /*---------------------------------------------*/
 button {
-	outline: none !important;
-	border: none;
-	background: transparent;
+  outline: none !important;
+  border: none;
+  background: transparent;
 }
 
 button:hover {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 iframe {
-	border: none !important;
+  border: none !important;
 }
 
 
@@ -170,7 +166,7 @@ iframe {
 }
 
 .container-login100 {
-  width: 100%;
+  width: 100%;  
   min-height: 100vh;
   display: -webkit-box;
   display: -webkit-flex;
@@ -181,13 +177,13 @@ iframe {
   justify-content: center;
   align-items: center;
   padding: 15px;
-
+  
   background-color: #ebebeb;
 }
 
 
 .wrap-login100 {
-  width: 300px;
+  width: 560px;
   background: #fff;
   border-radius: 10px;
   position: relative;
@@ -198,7 +194,7 @@ iframe {
 [ Form ]*/
 
 .login100-form {
-  width: 80%;
+  width: 100%;
 }
 
 .login100-form-title {
@@ -208,7 +204,7 @@ iframe {
   line-height: 1.2;
   text-align: center;
 
-  width: 80%;
+  width: 100%;
   display: block;
 }
 
