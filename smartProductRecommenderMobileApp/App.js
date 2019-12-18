@@ -15,7 +15,7 @@ export default function App() {
     const [isStarted, setStarted] = useState();
     const [isLoading, setLoading] = useState();
     const [matching_data, setData] = useState([]);
-    
+
 
 
      function componentDidMount(uniqId) {
@@ -24,8 +24,8 @@ export default function App() {
             .then((response) => response.json())
             .then((responseJson) => {
                 setData(responseJson);
+                console.log(responseJson);
             });
-
         return result;
     }
 
@@ -64,7 +64,7 @@ export default function App() {
     const imageTransactionHandler = (id) => {
       setTimeout(() => {
       componentDidMount(id);
-        }, 2000);
+    }, 4000);
 
     };
     const showImagePicker = () => {
@@ -81,7 +81,7 @@ export default function App() {
         setTimeout(() => {
             setLoading(false);
             setReco(true);
-        }, 4000);
+        }, 6000);
     };
 
     setTimeout(() => {

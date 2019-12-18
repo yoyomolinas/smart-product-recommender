@@ -7,30 +7,30 @@
 
 @font-face {
   font-family: Raleway-Regular;
-  src: url('../fonts/raleway/Raleway-Regular.ttf'); 
+  src: url('../fonts/raleway/Raleway-Regular.ttf');
 }
 
 @font-face {
   font-family: Raleway-Medium;
-  src: url('../fonts/raleway/Raleway-Medium.ttf'); 
+  src: url('../fonts/raleway/Raleway-Medium.ttf');
 }
 
 @font-face {
   font-family: Raleway-SemiBold;
-  src: url('../fonts/raleway/Raleway-SemiBold.ttf'); 
+  src: url('../fonts/raleway/Raleway-SemiBold.ttf');
 }
 
 @font-face {
   font-family: Raleway-Bold;
-  src: url('../fonts/raleway/Raleway-Bold.ttf'); 
+  src: url('../fonts/raleway/Raleway-Bold.ttf');
 }
 
 /*//////////////////////////////////////////////////////////////////
 [ RESTYLE TAG ]*/
 
 * {
-	margin: 0px; 
-	padding: 0px; 
+	margin: 0px;
+	padding: 0px;
 	box-sizing: border-box;
 }
 
@@ -170,7 +170,7 @@ iframe {
 }
 
 .container-login100 {
-  width: 100%;  
+  width: 100%;
   min-height: 100vh;
   display: -webkit-box;
   display: -webkit-flex;
@@ -181,13 +181,13 @@ iframe {
   justify-content: center;
   align-items: center;
   padding: 15px;
-  
+
   background-color: #ebebeb;
 }
 
 
 .wrap-login100 {
-  width: 560px;
+  width: 300px;
   background: #fff;
   border-radius: 10px;
   position: relative;
@@ -198,7 +198,7 @@ iframe {
 [ Form ]*/
 
 .login100-form {
-  width: 100%;
+  width: 80%;
 }
 
 .login100-form-title {
@@ -208,7 +208,7 @@ iframe {
   line-height: 1.2;
   text-align: center;
 
-  width: 100%;
+  width: 80%;
   display: block;
 }
 
