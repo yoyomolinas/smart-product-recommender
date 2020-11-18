@@ -12,7 +12,7 @@ The smart product recommender focuses purely on recommending products without an
 
 ## Project Structure
 
-- `research` : The directory where all research is conducted. Expect to find notebooks, data exploration tools, deep learning, and model deployment.
+- `research` : The directory where all research is conducted. Expect to find notebooks, data exploration tools, deep learning, model deployment and reports.
 - `mobile` : Source code for the mobile app in written using _React Native_.
 - `assets` : Assets for this project including _UML_ diagrams, _DrawIO_ files, and showcase images.
 - `backend`: Source code for the backend server written in _Flask_.
