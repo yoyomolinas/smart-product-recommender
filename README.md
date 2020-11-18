@@ -4,7 +4,7 @@ This project is built in collaboration with **Insider**, a data company that hel
 
 ![enter image description here](https://raw.githubusercontent.com/yoyomolinas/smart-product-recommender/master/assets/images/insider-logo.png)
 
-This project aims to solve the **cold start** problem for Insider customers, mainly e-commerce platforms and online retailer.
+This project aims to solve the **cold start** problem for Insider customers, mainly e-commerce platforms and online retailers.
 
 Cold start is a fundamental problem for recommender systems. Recommender engines suffer from being highly data driven decision makers, as healthy recommendations are not possible for new products with little or no historical data.
 
