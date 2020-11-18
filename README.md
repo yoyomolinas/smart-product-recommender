@@ -1,11 +1,24 @@
-## The Smart Product Recommender 
+# Smart Product Recommender
 
-Project website: 
-https://gentle-shelf-38277.herokuapp.com/
+This project is built in collaboration with **Insider**, a data company that helps marketers drive growth through Insider's AI-powered Growth Management Platform.
 
-This is the senior design project for Koç University Computer Engineering Design Project course. We are co-operating with Insider. Insider helps marketers drive growth with their AI-powered Growth Management Platform. Our aim in this project is to solve the problem called Cold-Start. Both item-based and user-based collaborative filtering algorithms suffer from this problem. The problem definition is that when a new product is added to the recommendation system database, the system cannot recommend that item due to insufficient colloborative data. So, some time is required to make healthy recommendations until that item's rating values are settled. The way we are going to use to solve this problem is create and train a model that consists of combination of Convolutional Neural Network and K-Nearest-Neighbor clustering and use the item's images to find a similarity to make recommendations.
+![enter image description here](https://raw.githubusercontent.com/yoyomolinas/smart-product-recommender/master/assets/images/insider-logo.png)
 
-### The Team
-* Emre Uludağ [@uludagemre](https://github.com/uludagemre)
-* Yoel Barış Molinas [@yoyomolinas](https://github.com/yoyomolinas)
-* Cenk Burak Egeli [@cenkburakegeli](https://github.com/cenkburakegeli)
+This project aims to solve the **cold start** problem for Insider customers, mainly e-commerce platforms and online retailer.
+
+Cold start is a fundamental problem for recommender systems. Recommender engines suffer from being highly data driven decision makers, as healthy recommendations are not possible for new products with little or no historical data.
+
+The smart product recommender focuses purely on recommending products without any historical data. By analyzing product images taken from a smartphone camera (garment and textile products) the smart recommender finds and displays products from Insider's customer databases.
+
+## Project Structure
+
+- `research` : The directory where all research is conducted. Expect to find notebooks, data exploration tools, deep learning, and model deployment.
+- `mobile` : Source code for the mobile app in written using _React Native_.
+- `assets` : Assets for this project including _UML_ diagrams, _DrawIO_ files, and showcase images.
+- `backend`: Source code for the backend server written in _Flask_.
+
+## The Team
+
+- Emre Uludağ [@uludagemre](https://github.com/uludagemre)
+- Yoel Barış Molinas [@yoyomolinas](https://github.com/yoyomolinas)
+- Cenk Burak Egeli [@cenkburakegeli](https://github.com/cenkburakegeli)
