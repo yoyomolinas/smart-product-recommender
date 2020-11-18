@@ -1,6 +1,6 @@
 # Smart Product Recommender
 
-This project is built in collaboration with **Insider**, a data company that helps marketers drive growth through Insider's AI-powered Growth Management Platform.
+This project is built in collaboration with **Insider**, a data company that helps marketers drive growth through its AI-powered Growth Management Platform.
 
 ![enter image description here](https://raw.githubusercontent.com/yoyomolinas/smart-product-recommender/master/assets/images/insider-logo.png)
 
