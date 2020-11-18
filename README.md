@@ -8,7 +8,7 @@ This project aims to solve the **cold start** problem for Insider customers, mai
 
 Cold start is a fundamental problem for recommender systems. Recommender engines suffer from being highly data driven decision makers, as healthy recommendations are not possible for new products with little or no historical data.
 
-The smart product recommender focuses purely on recommending products without any historical data. By analyzing product images taken from a smartphone camera (garment and textile products) the smart recommender finds and displays products from Insider's customer databases.
+The smart product recommender focuses purely on recommending products without any historical data. By analyzing product images taken from a smartphone camera (garment and textile products) the smart recommender finds and displays products similar in appearance from Insider's customer databases.
 
 ## Project Structure
 
